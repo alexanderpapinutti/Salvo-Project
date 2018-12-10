@@ -6,8 +6,16 @@
     background: white;
 }
 
+#tableContainer{
+    margin-right: 40px;
+}
+
 body {
     background-image: url('backgroundImage.jpg');
+}
+
+.tables-div{
+    display: flex;
 }
 
 .myRowHeaders{

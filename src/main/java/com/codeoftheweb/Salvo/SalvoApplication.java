@@ -20,7 +20,8 @@ public class SalvoApplication {
 	public CommandLineRunner initData(PlayerRepository playerRepository,
 									  GameRepository gameRepository,
 									  GamePlayerRepository gamePlayerRepository,
-									  ShipRepository shipRepository) {
+									  ShipRepository shipRepository,
+									  SalvoRepository salvoRepository) {
 		return (args) -> {
 
 			Player player1= new Player("j.bauer@ctu.gov");
@@ -166,6 +167,26 @@ public class SalvoApplication {
 			shipRepository.save(ship26);
 			shipRepository.save(ship27);
 
+			List<String> p1r1 = Arrays.asList("H2");
+			List<String> p2r1 = Arrays.asList("E5");
+			List<String> p1r2 = Arrays.asList("C6");
+			List<String> p2r2 = Arrays.asList("B5");
+			List<String> p1r3 = Arrays.asList("F1");
+			List<String> p2r3 = Arrays.asList("F0");
+
+			Salvo shotp1r1 = new Salvo(1, gamePlayer1, p1r1);
+			Salvo shotp2r1 = new Salvo(1, gamePlayer2, p2r1);
+			Salvo shotp1r2 = new Salvo(2, gamePlayer1, p1r2);
+			Salvo shotp2r2 = new Salvo(2, gamePlayer2, p2r2);
+			Salvo shotp1r3 = new Salvo(3, gamePlayer1, p1r3);
+			Salvo shotp2r3 = new Salvo(3, gamePlayer2, p2r3);
+
+			salvoRepository.save(shotp1r1);
+			salvoRepository.save(shotp2r1);
+			salvoRepository.save(shotp1r2);
+			salvoRepository.save(shotp2r2);
+			salvoRepository.save(shotp1r3);
+			salvoRepository.save(shotp2r3);
 
 		};
 	}

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +22,8 @@ public class SalvoController {
     private GamePlayerRepository gamePlayerRepository;
     @Autowired
     private ShipRepository shipRepository;
+    @Autowired
+    private SalvoRepository salvoRepository;
 
     @RequestMapping("/games")
     public List <Object> getAllGames() {
@@ -50,6 +51,10 @@ public class SalvoController {
         dto.put("userShips", gamePlayer.getShips()
         .stream().map(ship -> makeShipDTO(ship))
         .collect(Collectors.toList()));
+        dto.put("userSalvos", gamePlayer.getSalvos()
+                .stream()
+                .map(salvo -> makeSalvoDTO(salvo))
+                .collect(Collectors.toList()));
         return dto;
     }
 
@@ -64,15 +69,10 @@ public class SalvoController {
         return dto;
     }
 
-    private Map<String, Object> makeGameIdDTO(GamePlayer gamePlayer) {
+    private Map<String, Object> makeSalvoDTO(Salvo salvo) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("id", gamePlayer.getId());
-        dto.put("created", gamePlayer.getCreated());
-        dto.put("gamePlayers", makePlayerDTO(gamePlayer.getPlayer()));
-//        dto.put("ships", gamePlayer.getShips()
-//                .stream()
-//                .map(ships -> makeShipDTO(ships))
-//                .collect(Collectors.toList()));
+        dto.put("turn", salvo.getTurn());
+        dto.put("cell", salvo.getSalvoHits());
         return dto;
     }
 

@@ -13,13 +13,15 @@ loadGamePlayerData();
 
 function loadGamePlayerData() {
 
-    $("#tableContainer").append(generateGrid("U", mainData.columnHeaders, mainData.rowHeaders));
+    $("#tableContainer").append(generateUserGrid("U", mainData.columnHeaders, mainData.rowHeaders));
+    $("#tableContainerSalvos").append(generateUserGrid("S", mainData.columnHeaders, mainData.rowHeaders));
     getData();  
     console.log(mainData.player1)
     
 }
 
-function generateGrid(tableId,columnHeaders, rowHeaders) {
+
+function generateUserGrid(tableId,columnHeaders, rowHeaders) {
     let rows = rowHeaders.length;
     let cols = columnHeaders.length;
     var grid = "<table>";
@@ -43,6 +45,14 @@ function generateGrid(tableId,columnHeaders, rowHeaders) {
     return grid;
 }
 
+function printSalvos(locationsArray, salvo){
+    for (var i = 0; i < locationsArray.length; i++){
+        if (salvo == locationsArray[i]){
+            $("#S" + salvo).addClass('hit');
+        }
+    }
+}
+
 function printShips(arrayOfShips) {
     for (var i = 0; i < arrayOfShips.length; i++) {
         let shipLocations = arrayOfShips[i].locations;
@@ -62,6 +72,7 @@ function getData() {
         mainData.player1 = data.game.gamePlayers[1].player.email;
         mainData.player2 = data.game.gamePlayers[0].player.email;
         $("#this-game-players").append(displayPlayers(mainData.player1, mainData.player2));
+        
            
     })
 }
