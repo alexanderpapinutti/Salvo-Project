@@ -30,10 +30,6 @@ body {
     background-color: green;
 }
 
-.salvo-hit{
-    background-color: orange;
-}
-
 .emptyCells.salvo-location.enemy-guess {
     background-color: orange;
 }
@@ -59,8 +55,20 @@ td:hover {
     background-color: blue;
 }
 
-.salvo-location {
+.ship-location.Patrol-Boat.enemy-guess {
     background-color: red;
+}
+
+.ship-location.Submarine.enemy-guess {
+    background-color: red;
+}
+
+.ship-location.Destroyer.enemy-guess {
+    background-color: red;
+}
+
+.salvo-location {
+    background-color: green;
 }
 
 #this-game-players p{

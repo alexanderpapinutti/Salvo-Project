@@ -113,31 +113,31 @@ public class SalvoApplication {
 
 			Ship ship1 = new Ship(gamePlayer1,"Destroyer", location1);
 			Ship ship2 = new Ship(gamePlayer1,"Submarine", location2);
-			Ship ship3 = new Ship(gamePlayer1,"Patrol Boat", location3);
+			Ship ship3 = new Ship(gamePlayer1,"Patrol-Boat", location3);
 			Ship ship4 = new Ship(gamePlayer2,"Destroyer", location4);
-			Ship ship5 = new Ship(gamePlayer2,"Patrol Boat", location5);
+			Ship ship5 = new Ship(gamePlayer2,"Patrol-Boat", location5);
 			Ship ship6 = new Ship(gamePlayer3,"Destroyer", location6);
-			Ship ship7 = new Ship(gamePlayer3,"Patrol Boat", location7);
+			Ship ship7 = new Ship(gamePlayer3,"Patrol-Boat", location7);
 			Ship ship8 = new Ship(gamePlayer4,"Submarine", location8);
-			Ship ship9 = new Ship(gamePlayer4,"Patrol Boat", location9);
+			Ship ship9 = new Ship(gamePlayer4,"Patrol-Boat", location9);
 			Ship ship10 = new Ship(gamePlayer4,"Destroyer", location10);
-			Ship ship11 = new Ship(gamePlayer4,"Patrol Boat", location11);
+			Ship ship11 = new Ship(gamePlayer4,"Patrol-Boat", location11);
 			Ship ship12 = new Ship(gamePlayer5,"Submarine", location12);
-			Ship ship13 = new Ship(gamePlayer5,"Patrol Boat", location13);
+			Ship ship13 = new Ship(gamePlayer5,"Patrol-Boat", location13);
 			Ship ship14 = new Ship(gamePlayer6,"Destroyer", location14);
-			Ship ship15 = new Ship(gamePlayer6,"Patrol Boat", location15);
+			Ship ship15 = new Ship(gamePlayer6,"Patrol-Boat", location15);
 			Ship ship16 = new Ship(gamePlayer6,"Submarine", location16);
-			Ship ship17 = new Ship(gamePlayer6,"Patrol Boat", location17);
+			Ship ship17 = new Ship(gamePlayer6,"Patrol-Boat", location17);
 			Ship ship18 = new Ship(gamePlayer7,"Destroyer", location18);
-			Ship ship19 = new Ship(gamePlayer7,"Patrol Boat", location19);
+			Ship ship19 = new Ship(gamePlayer7,"Patrol-Boat", location19);
 			Ship ship20 = new Ship(gamePlayer8,"Submarine", location20);
-			Ship ship21 = new Ship(gamePlayer8,"Patrol Boat", location21);
+			Ship ship21 = new Ship(gamePlayer8,"Patrol-Boat", location21);
 			Ship ship22 = new Ship(gamePlayer9,"Destroyer", location22);
-			Ship ship23 = new Ship(gamePlayer9,"Patrol Boat", location23);
+			Ship ship23 = new Ship(gamePlayer9,"Patrol-Boat", location23);
 			Ship ship24 = new Ship(gamePlayer9,"Destroyer", location24);
-			Ship ship25 = new Ship(gamePlayer9,"Patrol Boat", location25);
-			Ship ship26 = new Ship(gamePlayer10,"Patrol Boat", location26);
-			Ship ship27 = new Ship(gamePlayer10,"Patrol Boat", location27);
+			Ship ship25 = new Ship(gamePlayer9,"Patrol-Boat", location25);
+			Ship ship26 = new Ship(gamePlayer10,"Patrol-Boat", location26);
+			Ship ship27 = new Ship(gamePlayer10,"Patrol-Boat", location27);
 
 			shipRepository.save(ship1);
 			shipRepository.save(ship2);
@@ -171,7 +171,7 @@ public class SalvoApplication {
 			List<String> p2r1 = Arrays.asList("B4","B5","B6");
 			List<String> p1r2 = Arrays.asList("F2","D5");
 			List<String> p2r2 = Arrays.asList("E1","H3","A2");
-			List<String> p1r3 = Arrays.asList("F2","D1","J10");
+			List<String> p1r3 = Arrays.asList("F3","D1","J10");
 			List<String> p2r3 = Arrays.asList("F9","I7","I10");
 
 			Salvo shotp1r1 = new Salvo(1, gamePlayer1, p1r1);

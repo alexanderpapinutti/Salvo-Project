@@ -51,6 +51,8 @@ function printEnemySalvos(arrayOfSalvos) {
         for (var j = 0; j < salvos.length; j++) {
             mainData.enemySalvos = salvos[j];
             $("#U" + mainData.enemySalvos).removeClass('emptyCells').addClass('enemy-guess');
+            $("#U" + mainData.enemySalvos).html(arrayOfSalvos[i].turn);
+            
         }
     }
 }
@@ -61,7 +63,11 @@ function printUserSalvos(arrayOfSalvos) {
         for (var j = 0; j < salvos.length; j++) {
             mainData.userSalvos = salvos[j];
             $("#S" + mainData.userSalvos).removeClass('emptyCells').addClass('salvo-location');
+            $("#S" + mainData.userSalvos).html(arrayOfSalvos[i].turn);
+            
+            
         }
+        console.log(arrayOfSalvos[i].turn);
 
     }
 }
