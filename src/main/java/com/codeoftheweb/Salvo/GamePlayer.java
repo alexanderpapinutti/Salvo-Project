@@ -38,7 +38,7 @@ public class GamePlayer {
         this.created = game.getCreated();
     }
 
-
+    @JsonIgnore
     public Player getPlayer() {
         return player;
     }
@@ -72,6 +72,7 @@ public class GamePlayer {
         this.created = created;
     }
 
+    @JsonIgnore
     public Set<Ship> getShips() {
         return ships;
     }
@@ -80,6 +81,7 @@ public class GamePlayer {
         this.ships = ships;
     }
 
+    @JsonIgnore
     public Set<Salvo> getSalvos() {
         return salvos;
     }

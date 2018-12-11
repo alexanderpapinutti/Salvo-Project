@@ -167,12 +167,12 @@ public class SalvoApplication {
 			shipRepository.save(ship26);
 			shipRepository.save(ship27);
 
-			List<String> p1r1 = Arrays.asList("H2");
-			List<String> p2r1 = Arrays.asList("E5");
-			List<String> p1r2 = Arrays.asList("C6");
-			List<String> p2r2 = Arrays.asList("B5");
-			List<String> p1r3 = Arrays.asList("F1");
-			List<String> p2r3 = Arrays.asList("F0");
+			List<String> p1r1 = Arrays.asList("B5","C5","F1");
+			List<String> p2r1 = Arrays.asList("B4","B5","B6");
+			List<String> p1r2 = Arrays.asList("F2","D5");
+			List<String> p2r2 = Arrays.asList("E1","H3","A2");
+			List<String> p1r3 = Arrays.asList("F2","D1","J10");
+			List<String> p2r3 = Arrays.asList("F9","I7","I10");
 
 			Salvo shotp1r1 = new Salvo(1, gamePlayer1, p1r1);
 			Salvo shotp2r1 = new Salvo(1, gamePlayer2, p2r1);

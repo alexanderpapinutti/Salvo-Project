@@ -44,6 +44,7 @@ public class Player {
 
     public Player() { }
 
+    @JsonIgnore
     public Player(String userName) {
         this.userName = userName;
     }
@@ -60,7 +61,7 @@ public class Player {
         return userName + " " + id;
     }
 
-    @JsonIgnore
+
     public Set<GamePlayer> getGamePlayers() {
         return gamePlayers;
     }

@@ -1,5 +1,6 @@
 package com.codeoftheweb.Salvo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
@@ -19,16 +20,17 @@ public class Salvo {
 
     @ElementCollection
     @Column(name="salvoLocations")
-    private List<String> salvoHits;
+    private List<String> locations;
 
     public Salvo(){ }
 
     public Salvo(int turn, GamePlayer gamePlayer, List<String> salvoHits) {
         this.turn = turn;
         this.gamePlayer = gamePlayer;
-        this.salvoHits = salvoHits;
+        this.locations = salvoHits;
     }
 
+//    @JsonIgnore
     public int getTurn() {
         return turn;
     }
@@ -37,6 +39,7 @@ public class Salvo {
         this.turn = turn;
     }
 
+    @JsonIgnore
     public GamePlayer getGamePlayer() {
         return gamePlayer;
     }
@@ -45,12 +48,12 @@ public class Salvo {
         this.gamePlayer = gamePlayer;
     }
 
-    public List<String> getSalvoHits() {
-        return salvoHits;
+    public List<String> getLocations() {
+        return locations;
     }
 
-    public void setSalvoHits(List<String> salvoHits) {
-        this.salvoHits = salvoHits;
+    public void setLocations(List<String> locations) {
+        this.locations = locations;
     }
 
     public long getId() {

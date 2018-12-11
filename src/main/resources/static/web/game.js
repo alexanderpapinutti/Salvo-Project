@@ -1,6 +1,7 @@
 const mainData = {
     userShips: [],
     userSalvos: [],
+    enemySalvos: [],
     columnHeaders: ["", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
     rowHeaders: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
     player1: '',
@@ -15,13 +16,12 @@ function loadGamePlayerData() {
 
     $("#tableContainer").append(generateUserGrid("U", mainData.columnHeaders, mainData.rowHeaders));
     $("#tableContainerSalvos").append(generateUserGrid("S", mainData.columnHeaders, mainData.rowHeaders));
-    getData();  
-    console.log(mainData.player1)
-    
+    getData();
+
 }
 
 
-function generateUserGrid(tableId,columnHeaders, rowHeaders) {
+function generateUserGrid(tableId, columnHeaders, rowHeaders) {
     let rows = rowHeaders.length;
     let cols = columnHeaders.length;
     var grid = "<table>";
@@ -45,11 +45,24 @@ function generateUserGrid(tableId,columnHeaders, rowHeaders) {
     return grid;
 }
 
-function printSalvos(locationsArray, salvo){
-    for (var i = 0; i < locationsArray.length; i++){
-        if (salvo == locationsArray[i]){
-            $("#S" + salvo).addClass('hit');
+function printEnemySalvos(arrayOfSalvos) {
+    for (var i = 0; i < arrayOfSalvos.length; i++) {
+        let salvos = arrayOfSalvos[i].locations;
+        for (var j = 0; j < salvos.length; j++) {
+            mainData.enemySalvos = salvos[j];
+            $("#U" + mainData.enemySalvos).removeClass('emptyCells').addClass('enemy-guess');
         }
+    }
+}
+
+function printUserSalvos(arrayOfSalvos) {
+    for (var i = 0; i < arrayOfSalvos.length; i++) {
+        let salvos = arrayOfSalvos[i].locations;
+        for (var j = 0; j < salvos.length; j++) {
+            mainData.userSalvos = salvos[j];
+            $("#S" + mainData.userSalvos).removeClass('emptyCells').addClass('salvo-location');
+        }
+
     }
 }
 
@@ -59,7 +72,7 @@ function printShips(arrayOfShips) {
         let shipType = arrayOfShips[i].type;
         for (var j = 0; j < shipLocations.length; j++) {
             let location = shipLocations[j];
-            $("#U" + location).addClass('ship-location ' + shipType);
+            $("#U" + location).removeClass('emptyCells').addClass('ship-location ' + shipType);
         }
     }
 }
@@ -68,17 +81,21 @@ function getData() {
     $.getJSON("/api/game_view/" + location.search.split("=")[1], function (data) {
         console.log(data)
         mainData.userShips = data.userShips;
+        mainData.userSalvos = data.userSalvos;
+        mainData.enemySalvos = data.enemySalvos;
         printShips(mainData.userShips);
+        printUserSalvos(mainData.userSalvos);
+        printEnemySalvos(mainData.enemySalvos);
+        //        printEnemySalvos(mainData.enemySalvos);
         mainData.player1 = data.game.gamePlayers[1].player.email;
         mainData.player2 = data.game.gamePlayers[0].player.email;
         $("#this-game-players").append(displayPlayers(mainData.player1, mainData.player2));
-        
-           
+
+
     })
 }
 
 function displayPlayers(player1, player2) {
-    console.log(player1, player2)
     var display = "<p>";
     display += player1 + "(you) vs. " + player2;
     display += "</p>";

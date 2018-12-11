@@ -26,6 +26,18 @@ body {
     
 }
 
+.enemy-guess {
+    background-color: green;
+}
+
+.salvo-hit{
+    background-color: orange;
+}
+
+.emptyCells.salvo-location.enemy-guess {
+    background-color: orange;
+}
+
 .myColumnHeaders{
     background: white;
     border: 3px solid;
@@ -44,7 +56,11 @@ td:hover {
 }
 
 .ship-location {
-    background-color: green;
+    background-color: blue;
+}
+
+.salvo-location {
+    background-color: red;
 }
 
 #this-game-players p{
