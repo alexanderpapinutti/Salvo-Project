@@ -21,7 +21,8 @@ public class SalvoApplication {
 									  GameRepository gameRepository,
 									  GamePlayerRepository gamePlayerRepository,
 									  ShipRepository shipRepository,
-									  SalvoRepository salvoRepository) {
+									  SalvoRepository salvoRepository,
+									  ScoreRepository scoreRepository) {
 		return (args) -> {
 
 			Player player1= new Player("j.bauer@ctu.gov");
@@ -42,6 +43,7 @@ public class SalvoApplication {
 			Date date5 = Date.from(date.toInstant().plusSeconds(14400));
 			Date date6 = Date.from(date.toInstant().plusSeconds(18000));
 			Date date7 = Date.from(date.toInstant().plusSeconds(21600));
+			Date finishDate =  Date.from(date.toInstant().plusSeconds(1800));
 
 			Game game1 = new Game( date1);
 			Game game2 = new Game(date2);
@@ -188,6 +190,15 @@ public class SalvoApplication {
 			salvoRepository.save(shotp1r3);
 			salvoRepository.save(shotp2r3);
 
+			Score score1 = new Score(1, finishDate, player1, game1);
+			Score score2 = new Score(0, finishDate, player2, game1);
+			Score score3 = new Score(1, finishDate, player1, game2);
+			Score score4 = new Score(0, finishDate, player2, game2);
+
+			scoreRepository.save(score1);
+			scoreRepository.save(score2);
+			scoreRepository.save(score3);
+			scoreRepository.save(score4);
 		};
 	}
 }

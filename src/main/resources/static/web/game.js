@@ -10,8 +10,6 @@ const mainData = {
 
 loadGamePlayerData();
 
-
-
 function loadGamePlayerData() {
 
     $("#tableContainer").append(generateUserGrid("U", mainData.columnHeaders, mainData.rowHeaders));
@@ -19,7 +17,6 @@ function loadGamePlayerData() {
     getData();
 
 }
-
 
 function generateUserGrid(tableId, columnHeaders, rowHeaders) {
     let rows = rowHeaders.length;
@@ -31,11 +28,11 @@ function generateUserGrid(tableId, columnHeaders, rowHeaders) {
         for (col = 0; col < cols; col++) {
             var indexColumn = $("td").index(this) + col + 2;
             if (indexRow == 1) {
-                grid += "<td class='myColumnHeaders'>" + columnHeaders[col] + "</td>";
+                grid += "<td class='myColumnHeaders'><div class='center'>" + columnHeaders[col] + "</div></td>";
             } else if (indexColumn == 1) {
                 grid += "<td class='myRowHeaders'>" + rowHeaders[row - 1] + "</td>"
             } else {
-                grid += "<td class='emptyCells' id=" + tableId + rowHeaders[row - 1] + columnHeaders[col] + ">" + rowHeaders[row - 1] + columnHeaders[col] + "</td>";
+                grid += "<td class='emptyCells' id=" + tableId + rowHeaders[row - 1] + columnHeaders[col] + "></td>";
             }
         }
         grid += "</tr>";
@@ -45,30 +42,14 @@ function generateUserGrid(tableId, columnHeaders, rowHeaders) {
     return grid;
 }
 
-function printEnemySalvos(arrayOfSalvos) {
+function printSalvos(tableID ,arrayOfSalvos, classID) {
     for (var i = 0; i < arrayOfSalvos.length; i++) {
         let salvos = arrayOfSalvos[i].locations;
         for (var j = 0; j < salvos.length; j++) {
-            mainData.enemySalvos = salvos[j];
-            $("#U" + mainData.enemySalvos).removeClass('emptyCells').addClass('enemy-guess');
-            $("#U" + mainData.enemySalvos).html(arrayOfSalvos[i].turn);
-            
+            let idLocation = salvos[j];
+            $(tableID + idLocation).removeClass('emptyCells').addClass(classID);
+            $(tableID + idLocation).html(arrayOfSalvos[i].turn);          
         }
-    }
-}
-
-function printUserSalvos(arrayOfSalvos) {
-    for (var i = 0; i < arrayOfSalvos.length; i++) {
-        let salvos = arrayOfSalvos[i].locations;
-        for (var j = 0; j < salvos.length; j++) {
-            mainData.userSalvos = salvos[j];
-            $("#S" + mainData.userSalvos).removeClass('emptyCells').addClass('salvo-location');
-            $("#S" + mainData.userSalvos).html(arrayOfSalvos[i].turn);
-            
-            
-        }
-        console.log(arrayOfSalvos[i].turn);
-
     }
 }
 
@@ -85,19 +66,15 @@ function printShips(arrayOfShips) {
 
 function getData() {
     $.getJSON("/api/game_view/" + location.search.split("=")[1], function (data) {
-        console.log(data)
         mainData.userShips = data.userShips;
         mainData.userSalvos = data.userSalvos;
         mainData.enemySalvos = data.enemySalvos;
         printShips(mainData.userShips);
-        printUserSalvos(mainData.userSalvos);
-        printEnemySalvos(mainData.enemySalvos);
-        //        printEnemySalvos(mainData.enemySalvos);
+        printSalvos('#S', mainData.userSalvos, 'salvo-location');
+        printSalvos('#U', mainData.enemySalvos, 'enemy-guess');
         mainData.player1 = data.game.gamePlayers[1].player.email;
         mainData.player2 = data.game.gamePlayers[0].player.email;
         $("#this-game-players").append(displayPlayers(mainData.player1, mainData.player2));
-
-
     })
 }
 
