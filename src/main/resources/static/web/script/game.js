@@ -42,13 +42,13 @@ function generateUserGrid(tableId, columnHeaders, rowHeaders) {
     return grid;
 }
 
-function printSalvos(tableID ,arrayOfSalvos, classID) {
+function printSalvos(tableID, arrayOfSalvos, classID) {
     for (var i = 0; i < arrayOfSalvos.length; i++) {
         let salvos = arrayOfSalvos[i].locations;
         for (var j = 0; j < salvos.length; j++) {
             let idLocation = salvos[j];
             $(tableID + idLocation).removeClass('emptyCells').addClass(classID);
-            $(tableID + idLocation).html(arrayOfSalvos[i].turn);          
+            $(tableID + idLocation).html(arrayOfSalvos[i].turn);
         }
     }
 }
@@ -84,3 +84,35 @@ function displayPlayers(player1, player2) {
     display += "</p>";
     return display;
 }
+
+
+//fetch("/api/logout", {
+//        credentials: 'include',
+//        method: 'POST',
+//        headers: {
+//            'Accept': 'application/json',
+//            'Content-Type': 'application/x-www-form-urlencoded'
+//        },
+//    })
+//    .then(r => {
+//        if (r.status == 200) {
+//            console.log(r)
+//        }
+//    })
+//    .catch(e => console.log(e))
+
+//fetch("/api/login", {
+//        credentials: 'include',
+//        method: 'POST',
+//        headers: {
+//            'Accept': 'application/json',
+//            'Content-Type': 'application/x-www-form-urlencoded'
+//        },
+//    body: 'userName=j.bauer@ctu.gov&password=123',
+//    })
+//    .then(r => {
+//        if (r.status == 200) {
+//            console.log(r)
+//        }
+//    })
+//    .catch(e => console.log(e))

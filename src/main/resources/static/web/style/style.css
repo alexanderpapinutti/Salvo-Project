@@ -3,7 +3,7 @@
     border: 3px solid;
     width: 40px;
     height: 40px;
-    background-image: url('header-background.jpg');
+    background-image: url('image/header-background.jpg');
 }
 
 #tableContainer{
@@ -11,15 +11,33 @@
 }
 
 body {
-    background-image: url('backgroundImage.jpg');
+    background-image: url('image/backgroundImage.jpg');
 }
 
 .tables-div{
     display: flex;
 }
 
+#leader-board-header {
+    color: white;
+}
+
+#leader-board-column {
+    color: white;
+}
+
+.center-players{
+    display: flex;
+    align-items: center;
+}
+
+h3 {
+    color: white;
+    font-family: impact;
+}
+
 .myRowHeaders{
-    background-image: url('header-background.jpg');
+    background-image: url('image/header-background.jpg');
     width: 40px;
     height: 40px;
     display: flex;
@@ -27,6 +45,11 @@ body {
     align-items: center;
     font-family: impact;
     color: white;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
 }
 
 .center {
@@ -47,7 +70,7 @@ body {
 
 .myColumnHeaders{
     color: white;
-    background-image: url('header-background.jpg');
+    background-image: url('image/header-background.jpg');
     width: 40px;
     height: 40px;
 }
@@ -67,9 +90,7 @@ td:hover {
     border: solid;
 }
 
-table {
-    border: solid 10px;
-}
+
 
 h1 {
     font-family: Impact;

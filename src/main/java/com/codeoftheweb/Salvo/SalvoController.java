@@ -1,12 +1,12 @@
 package com.codeoftheweb.Salvo;
 
+import org.hibernate.type.ListType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+
+import java.util.*;
 import java.util.stream.Collectors;
 
 
@@ -28,20 +28,55 @@ public class SalvoController {
     private ScoreRepository scoreRepository;
 
     @RequestMapping("/games")
-    public List <Object> getAllGames() {
+    public List<Object> getAllGames() {
         return gameRepository.findAll()
                 .stream()
                 .map(game -> makeGameDTO(game)).collect(Collectors.toList());
     }
 
     @RequestMapping("/players")
-    public List <Player> getAllPlayers() {
+    public List<Player> getAllPlayers() {
         return playerRepository.findAll();
     }
 
     @RequestMapping("/gamePlayers")
-    public List <GamePlayer> getAllGamePlayers() {
+    public List<GamePlayer> getAllGamePlayers() {
         return gamePlayerRepository.findAll();
+    }
+
+    @RequestMapping("/leaderBoard")
+    public List<Object> getLeaderBoard() {
+        List<Object> list = new ArrayList<>();
+        for (Player player : playerRepository.findAll()) {
+            Map<String, Object> dto = new HashMap<>();
+            dto.put("email", player.getUserName());
+            double total = 0.0;
+            int wins = 0;
+            int ties = 0;
+            int lost = 0;
+
+            for (Score score : player.getScore()) {
+                total += score.getScore();
+                if (score.getScore() == 1.0) {
+                    wins += 1;
+                } else if (score.getScore() == 0.5) {
+                    ties += 1;
+                } else if (score.getScore() == 0.0) {
+                    lost += 1;
+                } else {
+
+                }
+            }
+            dto.put("total", total);
+            dto.put("wins", wins);
+            dto.put("ties", ties);
+            dto.put("lost", lost);
+            list.add(dto);
+
+        }
+
+        return list;
+
     }
 
     @RequestMapping(value = "/game_view/{id}")
@@ -76,10 +111,6 @@ public class SalvoController {
         dto.put("score", game.getScore());
         return dto;
     }
-
-//    private Map<String, Object> makeScoreDTO(Score score){
-//        return score.getGame();
-//    }
 
     private Map<String, Object> makeSalvoDTO(Salvo salvo) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
@@ -118,3 +149,6 @@ public class SalvoController {
     }
 
 }
+
+
+

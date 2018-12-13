@@ -39,7 +39,6 @@ public class Game {
         return gamePlayers;
     }
 
-    @JsonIgnore
     public Set<Score> getScore() {
         return score;
     }

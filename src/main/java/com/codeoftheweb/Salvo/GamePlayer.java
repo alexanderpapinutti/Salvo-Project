@@ -89,4 +89,11 @@ public class GamePlayer {
         this.salvos = salvos;
     }
 
+    public Score getScore () {
+        return player.getScore().stream()
+                .filter(score -> score.getGame().getId() == game.getId())
+                .findFirst()
+                .orElse(null);
+    }
+
 }
