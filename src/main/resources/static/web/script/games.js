@@ -25,6 +25,41 @@
 //}
 //
 //loadData();
+function openForm() {
+  document.getElementById("myForm").style.display = "block";
+}
+
+function closeForm() {
+  document.getElementById("myForm").style.display = "none";
+}
+
+function login() {
+
+    fetch("/api/login", {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'userName=j.bauer@ctu.gov&password=123',
+        })
+        .then(r => {
+            if (r.status == 200) {
+                console.log(r)
+            }
+        })
+        .catch(e => console.log(e))
+}
+
+//var modal = document.getElementById('id01');
+//
+//// When the user clicks anywhere outside of the modal, close it
+//window.onclick = function(event) {
+//  if (event.target == modal) {
+//    modal.style.display = "none";
+//  }
+//}
 
 function loadLeaderBoard() {
     $.getJSON("/api/leaderBoard", function (data) {
@@ -39,22 +74,6 @@ function loadLeaderBoard() {
         grid += '<th id=leader-board-header>Tied</th>';
         grid += '</tr>';
         let rows = data.length;
-        //        tenPercentArray(sortTopTen("votes_with_party_pct"), "votes_with_party_pct");
-        //        
-        //        function tenPercentArray(array, sortkey) {
-        //            var empty = [];
-        //            for (var i = 0; i < array.length; i++) {
-        //                if (i < (array.length * 0.1)) {
-        //                    empty.push(array[i]);
-        //                } else if (array[i - 1][sortkey] == array[i][sortkey]) {
-        //                    empty.push(array[i]);
-        //                } else {
-        //                    break;
-        //                }
-        //            }
-        //            return empty;
-        //        }
-
         var byProperty = function (prop) {
             return function (a, b) {
                 if (typeof a[prop] == "number") {
@@ -64,7 +83,7 @@ function loadLeaderBoard() {
                 }
             };
         };
-        
+
         data.sort(byProperty('total'));
 
         for (var i = 0; i < rows; i++) {
@@ -87,13 +106,3 @@ function loadLeaderBoard() {
 }
 
 loadLeaderBoard();
-
-function sortLeaderBoard(sortkey, data) {
-    var allRows;
-    allRows = data;
-    allRows.sort(function (a, b) {
-        return b[sortkey] - a[sortkey]
-    });
-    console.log(allRows)
-    return allRows;
-}

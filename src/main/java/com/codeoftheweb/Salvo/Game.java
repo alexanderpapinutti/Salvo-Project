@@ -28,7 +28,7 @@ public class Game {
         gamePlayers.add(gamePlayer);
     }
 
-    @JsonIgnore
+    /*@JsonIgnore*/
     public List<Player> getPlayers() {
         return gamePlayers.stream().map(sub -> sub.getPlayer()).collect(toList());
     }

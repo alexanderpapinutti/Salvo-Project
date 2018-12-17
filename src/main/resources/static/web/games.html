@@ -4,15 +4,48 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="style/style.css">
+    <link rel="stylesheet" type="text/css" href="style/style-leaderboard.css">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+
 </head>
-<body class = 'container'>
-    <div class="title"><div><h1>Leader Board</h1></div></div>
-    <ol> </ol>
-    <div id="myTable"></div>
+
+<body class='container'>
+    <div class="top_tab">
+        <div class="my_links">
+            <ol>
+                <li><button class="open-button" onclick="openForm()">Login</button></li>
+                <li id='create-player'>Sign Up</li>
+                <li>Rules</li>
+            </ol>
+        </div>
+    </div>
+    <div class="form-popup" id="myForm">
+        <form action="/action_page.php" class="form-container">
+            <h1>Login</h1>
+
+            <label for="email"><b>Email</b></label>
+            <input type="text" placeholder="Enter Email" name="userName" required>
+
+            <label for="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="password" required>
+
+            <button type="submit" class="btn" onclick="login()">Login</button>
+            <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
+        </form>
+    </div>
+    <div class="title">
+        <div>
+            <h1>Leader Board</h1>
+        </div>
+    </div>
+    <div class="content">
+
+        <div id="myTable"></div>
+    </div>
 </body>
-<script src="https://code.jquery.com/jquery-2.2.0.js"></script>
+
 <script src="script/games.js"></script>
 <html>
 

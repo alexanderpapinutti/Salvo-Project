@@ -66,14 +66,15 @@ function printShips(arrayOfShips) {
 
 function getData() {
     $.getJSON("/api/game_view/" + location.search.split("=")[1], function (data) {
+        console.log(data)
         mainData.userShips = data.userShips;
         mainData.userSalvos = data.userSalvos;
         mainData.enemySalvos = data.enemySalvos;
         printShips(mainData.userShips);
         printSalvos('#S', mainData.userSalvos, 'salvo-location');
         printSalvos('#U', mainData.enemySalvos, 'enemy-guess');
-        mainData.player1 = data.game.gamePlayers[1].player.email;
-        mainData.player2 = data.game.gamePlayers[0].player.email;
+        mainData.player1 = data.userInfo.userName;
+        mainData.player2 = data.enemyInfo.userName;
         $("#this-game-players").append(displayPlayers(mainData.player1, mainData.player2));
     })
 }
@@ -100,7 +101,7 @@ function displayPlayers(player1, player2) {
 //        }
 //    })
 //    .catch(e => console.log(e))
-
+//
 //fetch("/api/login", {
 //        credentials: 'include',
 //        method: 'POST',

@@ -19,6 +19,7 @@ public class Player {
     private String userName;
     private String password;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "player", fetch=FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
 
@@ -27,7 +28,7 @@ public class Player {
 
     public Player() { }
 
-    @JsonIgnore
+
     public Player(String userName, String password) {
         this.userName = userName;
         this.password = password;
@@ -43,7 +44,6 @@ public class Player {
         return gamePlayers.stream().map(sub -> sub.getGame()).collect(toList());
     }
 
-    @JsonIgnore
     public Set<Score> getScore() {
         return score;
     }
@@ -80,6 +80,7 @@ public class Player {
         this.gamePlayers = gamePlayers;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
