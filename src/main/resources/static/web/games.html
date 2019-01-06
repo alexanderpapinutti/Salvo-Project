@@ -15,25 +15,29 @@
     <div class="top_tab">
         <div class="my_links">
             <ol>
-                <li><button class="open-button" onclick="openForm()">Login</button></li>
+                <li><button id='profile-login' onclick="openForm()" >Login</button></li>
                 <li id='create-player'>Sign Up</li>
                 <li>Rules</li>
             </ol>
         </div>
     </div>
-    <div class="form-popup" id="myForm">
-        <form action="/action_page.php" class="form-container">
-            <h1>Login</h1>
+    <div id="modal-wrapper" class="modal">
 
-            <label for="email"><b>Email</b></label>
-            <input type="text" placeholder="Enter Email" name="userName" required>
+        <div class="modal-content animate">
 
-            <label for="psw"><b>Password</b></label>
-            <input type="password" placeholder="Enter Password" name="password" required>
+            <div class="imgcontainer">
+                <span onclick="closeForm()" class="close" title="Close PopUp">&times;</span>
+                <img src="style/image/profile-img.png" alt="Avatar" class="avatar">
+                <h1 style="text-align:center">Enter Authentification Details</h1>
+            </div>
+            <div class="form-container">
+                <input type="text" placeholder="Enter Username" name="uname" id="password">
+                <input type="password" placeholder="Enter Password" name="psw" id="username">
+                <button id="this-button" type="submit" onclick="login()">Login</button>
+            </div>
 
-            <button type="submit" class="btn" onclick="login()">Login</button>
-            <button type="button" class="btn cancel" onclick="closeForm()">Close</button>
-        </form>
+        </div>
+
     </div>
     <div class="title">
         <div>
@@ -41,7 +45,6 @@
         </div>
     </div>
     <div class="content">
-
         <div id="myTable"></div>
     </div>
 </body>

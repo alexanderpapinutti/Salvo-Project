@@ -1,39 +1,22 @@
-//function loadData() {
-//
-//    $.getJSON("/api/games", function (data) {
-//        var items = [];
-//        $.each(data, function (key, val) {
-//            var player1 = val.gamePlayers[0].player.email;
-//
-//            if (val.gamePlayers[1] == null) {
-//                items.push("<li id='listItem'>" + val.id + ". " + val.created + ": " + player1 + "</li");
-//            } else {
-//                items.push("<li id='listItem'>" + val.id + ". " + val.created + ": " + player1 + ", " + val.gamePlayers[1].player.email + "</li>");
-//            }
-//
-//
-//
-//        });
-//
-//        $("<ul/>", {
-//            "class": "my-new-list",
-//            html: items.join("")
-//        }).appendTo("ol");
-//    });
-//
-//
-//}
-//
-//loadData();
 function openForm() {
-  document.getElementById("myForm").style.display = "block";
+    document.getElementById("modal-wrapper").style.display = "block";
 }
 
 function closeForm() {
-  document.getElementById("myForm").style.display = "none";
+    document.getElementById("modal-wrapper").style.display = "none";
+}
+
+var modal = document.getElementById('modal-wrapper');
+window.onclick = function (event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
 }
 
 function login() {
+    var username = document.getElementById("username").value;
+    var password = document.getElementById("password").value;
+
 
     fetch("/api/login", {
             credentials: 'include',
@@ -42,7 +25,7 @@ function login() {
                 'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: 'userName=j.bauer@ctu.gov&password=123',
+            body: 'userName=' + username + '&password=' + password,
         })
         .then(r => {
             if (r.status == 200) {
@@ -51,15 +34,6 @@ function login() {
         })
         .catch(e => console.log(e))
 }
-
-//var modal = document.getElementById('id01');
-//
-//// When the user clicks anywhere outside of the modal, close it
-//window.onclick = function(event) {
-//  if (event.target == modal) {
-//    modal.style.display = "none";
-//  }
-//}
 
 function loadLeaderBoard() {
     $.getJSON("/api/leaderBoard", function (data) {
