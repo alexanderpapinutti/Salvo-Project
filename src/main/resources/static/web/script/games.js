@@ -1,23 +1,77 @@
+var modal = document.getElementById('modal-wrapper');
+window.onclick = function (event) {
+    if (event.target == modal) {
+        closeForm();
+    }
+}
+
 function openForm() {
-    document.getElementById("modal-wrapper").style.display = "block";
+    document.getElementById("errorMsg").innerHTML = '';
+    let loginToggle = document.getElementById('profile-login').innerHTML;
+    if (loginToggle == "Login/Register") {
+        document.getElementById("modal-wrapper").style.display = "block";
+    } else {
+        fetch("/api/logout", {
+                credentials: 'include',
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+            })
+            .then(r => {
+                if (r.status == 200) {
+                    console.log(r)
+                    document.getElementById("profile-login").innerHTML = 'Login/Register';
+                    document.getElementById("logged-user").innerHTML = '';
+                }
+            })
+            .catch(e => console.log(e))
+
+    }
+
 }
 
 function closeForm() {
     document.getElementById("modal-wrapper").style.display = "none";
 }
 
-var modal = document.getElementById('modal-wrapper');
-window.onclick = function (event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
+
+
+function signUp() {
+    var username = $("#username").val();
+    var password = $("#password").val();
+    fetch("/api/players", {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: 'userName=' + username + '&password=' + password,
+        })
+        .then(r => {
+            console.log(r)
+            if (r.status == 201) {
+                closeForm();
+                document.getElementById('logged-user').innerHTML = '<h4> Welcome '+username+'</h4>';
+                document.getElementById('profile-login').innerHTML = 'Logout';
+
+            }if (r.status == 409){
+                document.getElementById("errorMsg").innerHTML = '*Account already in use';             
+            }
+        })
+
+        //                      r.json().then(e => document.getElementById('errorMsg').innerHTML = e.val()))
+
+        .catch(e => console.log(e))
+
 }
 
 function login() {
-    var username = document.getElementById("username").value;
-    var password = document.getElementById("password").value;
 
-
+    var username = $("#username").val();
+    var password = $("#password").val();
     fetch("/api/login", {
             credentials: 'include',
             method: 'POST',
@@ -28,8 +82,13 @@ function login() {
             body: 'userName=' + username + '&password=' + password,
         })
         .then(r => {
+            console.log(r)
             if (r.status == 200) {
-                console.log(r)
+                document.getElementById('profile-login').innerHTML = 'Logout';
+                modal.style.display = "none";
+                document.getElementById('logged-user').innerHTML = '<h4> Welcome ' + username + '</h4>';
+            } else if (r.status == 401) {
+                document.getElementById("errorMsg").innerHTML = '<p>*Enter a valid User Name or Password</p>';
             }
         })
         .catch(e => console.log(e))

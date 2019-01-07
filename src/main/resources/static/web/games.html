@@ -15,11 +15,11 @@
     <div class="top_tab">
         <div class="my_links">
             <ol>
-                <li><button id='profile-login' onclick="openForm()" >Login</button></li>
-                <li id='create-player'>Sign Up</li>
-                <li>Rules</li>
+                <li><button id='profile-login' onclick="openForm()" >Login/Register</button></li>
+                
             </ol>
         </div>
+        <div id="logged-user"></div>
     </div>
     <div id="modal-wrapper" class="modal">
 
@@ -31,9 +31,11 @@
                 <h1 style="text-align:center">Enter Authentification Details</h1>
             </div>
             <div class="form-container">
-                <input type="text" placeholder="Enter Username" name="uname" id="password">
-                <input type="password" placeholder="Enter Password" name="psw" id="username">
-                <button id="this-button" type="submit" onclick="login()">Login</button>
+                <input type="text" placeholder="Enter Username" name="uname" id="username">
+                <input type="password" placeholder="Enter Password" name="psw" id="password">
+                <div id="errorMsg"></div>
+                <button id="login-button" type="submit" onclick='login()'>Log In</button>
+                <button id="login-button" type="submit" onclick='signUp()'>Sign Up</button>
             </div>
 
         </div>

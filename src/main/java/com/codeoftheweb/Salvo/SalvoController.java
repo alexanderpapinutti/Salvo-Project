@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class SalvoController {
 
-
     @Autowired
     PasswordEncoder passwordEncoder;
     @Autowired
@@ -42,11 +41,9 @@ public class SalvoController {
             return new ResponseEntity<Map<String, Object>>(makeMap("error","log in"), HttpStatus.UNAUTHORIZED);
         }
     }
-    
 
     @RequestMapping(path = "/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String,Object>> createPlayer(String userName, String password) {
-
 
         if (userName.isEmpty()){
             return new ResponseEntity<Map<String, Object>>(makeMap("error","Type in a name"), HttpStatus.FORBIDDEN);
@@ -127,25 +124,23 @@ public class SalvoController {
 
     @RequestMapping("/games")
     public Map<String, Object> getAll(Authentication authentication) {
-        isGuest(authentication);
+//        isGuest(authentication);
         Map<String, Object> map = new HashMap<>();
         map.put("currentPlayer", playerRepository.findByUserName(authentication.getName()));
         map.put("games", gameRepository.findAll());
+
         return map;
     }
 
-
-
-
-    private boolean isGuest(Authentication authentication) {
-        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
-    }
+//    private boolean isGuest(Authentication authentication) {
+//        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
+//    }
 
     private Map<String, Object> makeGameDTO(Game game) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id", game.getId());
         dto.put("created", game.getCreated().toString());
-        dto.put("score", game.getScore());
+        dto.put("gamePlayers", game.getGamePlayers());
         return dto;
     }
 
@@ -158,7 +153,8 @@ public class SalvoController {
 
     private Map<String, Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("id", gamePlayer.getId());
+        dto.put("gpid", gamePlayer.getId());
+        dto.put("id", gamePlayer.getPlayer().getId());
         dto.put("name",gamePlayer.getPlayer());
         return dto;
     }

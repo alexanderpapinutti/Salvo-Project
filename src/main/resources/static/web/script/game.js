@@ -87,33 +87,3 @@ function displayPlayers(player1, player2) {
 }
 
 
-//fetch("/api/logout", {
-//        credentials: 'include',
-//        method: 'POST',
-//        headers: {
-//            'Accept': 'application/json',
-//            'Content-Type': 'application/x-www-form-urlencoded'
-//        },
-//    })
-//    .then(r => {
-//        if (r.status == 200) {
-//            console.log(r)
-//        }
-//    })
-//    .catch(e => console.log(e))
-//
-//fetch("/api/login", {
-//        credentials: 'include',
-//        method: 'POST',
-//        headers: {
-//            'Accept': 'application/json',
-//            'Content-Type': 'application/x-www-form-urlencoded'
-//        },
-//    body: 'userName=j.bauer@ctu.gov&password=123',
-//    })
-//    .then(r => {
-//        if (r.status == 200) {
-//            console.log(r)
-//        }
-//    })
-//    .catch(e => console.log(e))

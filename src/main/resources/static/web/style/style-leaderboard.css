@@ -47,7 +47,8 @@ input[type=text], input[type=password] {
 	padding-bottom: 30px;
 }
 
-#this-button{
+#login-button{
+    margin-top: 5px;
     width: 50%;
     background: coral;
     border: none;
@@ -71,6 +72,11 @@ ol li button {
     cursor: pointer;
 }
 
+#errorMsg{
+    color:red;
+    height: 20px;
+}
+
 /* Add Zoom Animation */
 .animate {
     animation: zoom 0.6s
@@ -87,9 +93,15 @@ ol li button {
     align-items: center;
 }
 
+#logged-user {
+    margin-top: 5px;
+    margin-left: 20%;
+}
+
 .top_tab{
     height: 50px;
     background-color: coral;
+    display: flex;
 }
 
 li {
