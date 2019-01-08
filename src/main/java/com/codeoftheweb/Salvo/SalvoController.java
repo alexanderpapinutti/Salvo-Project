@@ -75,7 +75,6 @@ public class SalvoController {
             int wins = 0;
             int ties = 0;
             int lost = 0;
-
             for (Score score : player.getScore()) {
                 total += score.getScore();
                 if (score.getScore() == 1.0) {
@@ -93,11 +92,8 @@ public class SalvoController {
             dto.put("ties", ties);
             dto.put("lost", lost);
             list.add(dto);
-
         }
-
         return list;
-
     }
 
     @RequestMapping(value = "/game_view/{id}")
@@ -124,11 +120,11 @@ public class SalvoController {
 
     @RequestMapping("/games")
     public Map<String, Object> getAll(Authentication authentication) {
-
         Map<String, Object> map = new HashMap<>();
         if(authentication != null)
         map.put("currentPlayer", playerRepository.findByUserName(authentication.getName()));
-        map.put("games", gameRepository.findAll());
+        map.put("games", gamePlayerRepository.findAll());
+
 
         return map;
     }
@@ -137,7 +133,7 @@ public class SalvoController {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("id", game.getId());
         dto.put("created", game.getCreated().toString());
-        dto.put("gamePlayers", game.getGamePlayers());
+        dto.put("players", game.getGamePlayers());
         return dto;
     }
 
@@ -156,12 +152,16 @@ public class SalvoController {
         return dto;
     }
 
-    private Map<String, Object> makePlayerDTO (Player player){
+    private Map<String, Object> makePlayerDTO (GamePlayer gamePlayer){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("id", player.getId());
-        dto.put("name", player.getUserName());
+        dto.put("gpid", gamePlayer.getId());
+        dto.put("name", gamePlayer.getPlayer());
+        dto.put("id", gamePlayer.getPlayer().getId());
+
         return dto;
     }
+
+
 
     private Map <String, Object> makeShipDTO (Ship ship){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();

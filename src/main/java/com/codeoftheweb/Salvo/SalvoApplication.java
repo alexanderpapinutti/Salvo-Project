@@ -73,7 +73,7 @@ public class SalvoApplication {
 
 
 
-			Game game1 = new Game(date1);
+			Game game1 = new Game( date1);
 			Game game2 = new Game(date2);
 			Game game3 = new Game(date3);
 			Game game4 = new Game(date4);
@@ -244,7 +244,7 @@ public class SalvoApplication {
 }
 
 @Configuration
-class  WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
+class WebSecurityConfiguration extends GlobalAuthenticationConfigurerAdapter {
 
 	@Autowired
 	PlayerRepository playerRepository;

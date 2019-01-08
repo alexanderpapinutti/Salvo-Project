@@ -1,4 +1,6 @@
 var modal = document.getElementById('modal-wrapper');
+var errorMsg = document.getElementById("errorMsg");
+
 window.onclick = function (event) {
     if (event.target == modal) {
         closeForm();
@@ -17,12 +19,12 @@ function isLogedIn() {
         .then(r => r.json())
         .then(response => {
 
-            let loggedUser = response.currentPlayer.userName;
-            if (loggedUser != null) {
-                document.getElementById('logged-user').innerHTML = loggedUser;
-                document.getElementById('profile-login').innerHTML = 'Logout'
+            
+            if (response.currentPlayer.userName != null) {
+                document.getElementById('logged-user').innerHTML = '<p class="logged_in_user">You are logged in as "'+response.currentPlayer.userName+'"</p>';
+                document.getElementById('profile-login').innerHTML = 'Logout';
             } else {
-                document.getElementById('logged-user').innerHTML = '';
+                clearUsername();
             } 
         })
 
@@ -30,13 +32,15 @@ function isLogedIn() {
 
 }
 
-
+function clearUsername () {
+    document.getElementById('logged-user').innerHTML = '';
+}
 
 function openForm() {
-    document.getElementById("errorMsg").innerHTML = '';
+    errorMsg.innerHTML = '';
     let loginToggle = document.getElementById('profile-login').innerHTML;
     if (loginToggle == "Login/Register") {
-        document.getElementById("modal-wrapper").style.display = "block";
+        showForm();
     } else {
         fetch("/api/logout", {
                 credentials: 'include',
@@ -49,9 +53,8 @@ function openForm() {
             .then(r => {
                 if (r.status == 200) {
                     console.log(r)
-
                     document.getElementById("profile-login").innerHTML = 'Login/Register';
-                    document.getElementById("logged-user").innerHTML = '';
+                    clearUsername();
                     isLogedIn()
                 }
             })
@@ -65,15 +68,9 @@ function closeForm() {
     document.getElementById("modal-wrapper").style.display = "none";
 }
 
-
-function logOutToggle() {
-    if (document.getElementById("logged-user").innerHTML != '') {
-        document.getElementById('profile-login').innerHTML == 'Logout'
-    }
+function showForm () {
+    document.getElementById("modal-wrapper").style.display = "block";
 }
-
-
-
 
 function signUp() {
     var username = $("#username").val();
@@ -100,7 +97,8 @@ function signUp() {
             }
 
             if (r.status == 409) {
-                document.getElementById("errorMsg").innerHTML = '*Account already in use';
+                console.log(r)
+                errorMsg.innerHTML = '*Account already in use';
             }
         })
         .catch(e => console.log(e))
@@ -126,6 +124,7 @@ function login() {
 
                 document.getElementById('profile-login').innerHTML = 'Logout';
                 closeForm();
+                swal("Success!","You Logged In Successfully")
                 isLogedIn();
                 //                document.getElementById('logged-user').innerHTML = '<h4> Welcome ' + username + '</h4>';
             } else if (r.status == 401) {
