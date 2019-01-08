@@ -5,6 +5,33 @@ window.onclick = function (event) {
     }
 }
 
+function isLogedIn() {
+    fetch("/api/games", {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+        })
+        .then(r => r.json())
+        .then(response => {
+
+            let loggedUser = response.currentPlayer.userName;
+            if (loggedUser != null) {
+                document.getElementById('logged-user').innerHTML = loggedUser;
+                document.getElementById('profile-login').innerHTML = 'Logout'
+            } else {
+                document.getElementById('logged-user').innerHTML = '';
+            } 
+        })
+
+        .catch(e => console.log(e))
+
+}
+
+
+
 function openForm() {
     document.getElementById("errorMsg").innerHTML = '';
     let loginToggle = document.getElementById('profile-login').innerHTML;
@@ -22,8 +49,10 @@ function openForm() {
             .then(r => {
                 if (r.status == 200) {
                     console.log(r)
+
                     document.getElementById("profile-login").innerHTML = 'Login/Register';
                     document.getElementById("logged-user").innerHTML = '';
+                    isLogedIn()
                 }
             })
             .catch(e => console.log(e))
@@ -35,6 +64,14 @@ function openForm() {
 function closeForm() {
     document.getElementById("modal-wrapper").style.display = "none";
 }
+
+
+function logOutToggle() {
+    if (document.getElementById("logged-user").innerHTML != '') {
+        document.getElementById('profile-login').innerHTML == 'Logout'
+    }
+}
+
 
 
 
@@ -50,20 +87,22 @@ function signUp() {
             },
             body: 'userName=' + username + '&password=' + password,
         })
+
         .then(r => {
-            console.log(r)
+
             if (r.status == 201) {
+
                 closeForm();
-                document.getElementById('logged-user').innerHTML = '<h4> Welcome '+username+'</h4>';
+                login();
+                isLogedIn();
                 document.getElementById('profile-login').innerHTML = 'Logout';
 
-            }if (r.status == 409){
-                document.getElementById("errorMsg").innerHTML = '*Account already in use';             
+            }
+
+            if (r.status == 409) {
+                document.getElementById("errorMsg").innerHTML = '*Account already in use';
             }
         })
-
-        //                      r.json().then(e => document.getElementById('errorMsg').innerHTML = e.val()))
-
         .catch(e => console.log(e))
 
 }
@@ -84,14 +123,17 @@ function login() {
         .then(r => {
             console.log(r)
             if (r.status == 200) {
+
                 document.getElementById('profile-login').innerHTML = 'Logout';
-                modal.style.display = "none";
-                document.getElementById('logged-user').innerHTML = '<h4> Welcome ' + username + '</h4>';
+                closeForm();
+                isLogedIn();
+                //                document.getElementById('logged-user').innerHTML = '<h4> Welcome ' + username + '</h4>';
             } else if (r.status == 401) {
                 document.getElementById("errorMsg").innerHTML = '<p>*Enter a valid User Name or Password</p>';
             }
         })
         .catch(e => console.log(e))
+
 }
 
 function loadLeaderBoard() {
@@ -137,5 +179,7 @@ function loadLeaderBoard() {
         $('#myTable').append(grid);
     })
 }
+
+isLogedIn();
 
 loadLeaderBoard();

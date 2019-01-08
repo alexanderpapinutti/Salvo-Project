@@ -124,17 +124,14 @@ public class SalvoController {
 
     @RequestMapping("/games")
     public Map<String, Object> getAll(Authentication authentication) {
-//        isGuest(authentication);
+
         Map<String, Object> map = new HashMap<>();
+        if(authentication != null)
         map.put("currentPlayer", playerRepository.findByUserName(authentication.getName()));
         map.put("games", gameRepository.findAll());
 
         return map;
     }
-
-//    private boolean isGuest(Authentication authentication) {
-//        return authentication == null || authentication instanceof AnonymousAuthenticationToken;
-//    }
 
     private Map<String, Object> makeGameDTO(Game game) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
