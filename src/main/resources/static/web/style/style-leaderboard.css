@@ -8,6 +8,12 @@ input[type=text], input[type=password] {
 	font-size:16px;
 }
 
+#join_game {
+    border: none;
+    background: coral;
+    border-radius: 5px;
+}
+
 .container {
     padding: 0px;
     margin: 0px;
@@ -41,7 +47,7 @@ input[type=text], input[type=password] {
 }
 
 body {
-    background-image: url('image/backgroundImage.jpg')
+   
 }
 
 /* Modal Content Box */

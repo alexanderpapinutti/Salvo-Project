@@ -123,17 +123,22 @@ public class SalvoController {
         Map<String, Object> map = new HashMap<>();
         if(authentication != null)
         map.put("currentPlayer", playerRepository.findByUserName(authentication.getName()));
-        map.put("games", gamePlayerRepository.findAll());
-
-
+        map.put("games", gameRepository
+                .findAll()
+                .stream()
+                .map(game -> makeGameDTO(game))
+                .collect(Collectors.toList()));
         return map;
     }
 
     private Map<String, Object> makeGameDTO(Game game) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("id", game.getId());
-        dto.put("created", game.getCreated().toString());
-        dto.put("players", game.getGamePlayers());
+        dto.put("gameId", game.getId());
+        dto.put("creationDate", game.getCreated().toString());
+        dto.put("gamePlayers", game.getGamePlayers()
+                .stream()
+                .map(gamePlayer -> makeGamePlayerDTO(gamePlayer))
+                .collect(Collectors.toList()));
         return dto;
     }
 
@@ -146,18 +151,15 @@ public class SalvoController {
 
     private Map<String, Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("gpid", gamePlayer.getId());
-        dto.put("id", gamePlayer.getPlayer().getId());
-        dto.put("name",gamePlayer.getPlayer());
+        dto.put("gamePlayerId", gamePlayer.getId());
+        dto.put("player", makePlayerDTO(gamePlayer.getPlayer()));
         return dto;
     }
 
-    private Map<String, Object> makePlayerDTO (GamePlayer gamePlayer){
+    private Map<String, Object> makePlayerDTO (Player player){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("gpid", gamePlayer.getId());
-        dto.put("name", gamePlayer.getPlayer());
-        dto.put("id", gamePlayer.getPlayer().getId());
-
+        dto.put("playerId", player.getId());
+        dto.put("userName", player.getUserName());
         return dto;
     }
 
