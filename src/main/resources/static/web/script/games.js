@@ -139,9 +139,8 @@ function login() {
         .catch(e => console.log(e))
 }
 
-function loadGameList() {    
+function loadGameList() {
     $.getJSON("/api/games", function (data) {
-        var player = data.currentPlayer.userName;
         $('#logged_player_games').empty();
         var grid = "<table class='table table-hover table-dark'>";
         grid += '<tbody>';
@@ -151,17 +150,31 @@ function loadGameList() {
         grid += '<th id=leader-board-header>Continue Playing</th>';
         grid += '</tr>';
         var numberOfGames = data.games.length;
-        for (var i = 0; i < numberOfGames; i++){
-            console.log(data.games[i].creationDate)
-            grid += "<tr>";
-            grid += "<td id='leader-board-column'>" + data.games[i].creationDate + "</td>";           
-            if (data.games[i].gamePlayers[1] != null){
-                grid += "<td id='leader-board-column'>" + data.games[i].gamePlayers[0].player.userName+ " vs "+ data.games[i].gamePlayers[1].player.userName+ "</td>";
-            }else {
-                grid += "<td id='leader-board-column'>" + data.games[i].gamePlayers[0].player.userName+ "</td>";
+        var enemy, user, userId;
+        for (var i = 0; i < numberOfGames; i++) {      
+            for (var j = 0; j < data.games[i].gamePlayers.length; j++){                
+                if (data.games[i].gamePlayers[j].player.userName == data.currentPlayer.userName){
+                    user = data.games[i].gamePlayers[j].player.userName;
+                    userId = data.games[i].gamePlayers[j].gamePlayerId;
+                    if (data.games[i].gamePlayers[j+1] != null){
+                        enemy = data.games[i].gamePlayers[j+1].player.userName;
+                        grid += "<tr>";
+                        grid += "<td id='leader-board-column'>" + data.games[i].creationDate + "</td>";
+                        grid += "<td id='leader-board-column'><b>" +  user + "</b> vs " + enemy + "</td>";
+                    }else if (data.games[i].gamePlayers[j-1] != null){
+                        enemy = data.games[i].gamePlayers[j-1].player.userName;
+                        grid += "<tr>";
+                        grid += "<td id='leader-board-column'>" + data.games[i].creationDate + "</td>";
+                        grid += "<td id='leader-board-column'><b>" +  user + "</b> vs " + enemy + "</td>";
+                    }else {
+                        grid += "<tr>";
+                        grid += "<td id='leader-board-column'>" + data.games[i].creationDate + "</td>";
+                        grid += "<td id='leader-board-column'><b>" +  user + "</b></td>";
+                    }
+                    grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + userId + "'>Join</a></button></td>";
+                    grid += "</tr>";                
+                }
             }
-            grid += "<td id='leader-board-column'><button id='join_game' onclick='goToGamePage()'>Join</button></td>";
-            grid += "</tr>";
         }
         grid += '</tbody>'
         grid += '</table>'
@@ -216,3 +229,4 @@ function loadLeaderBoard() {
 isLogedIn();
 
 loadLeaderBoard();
+                  
