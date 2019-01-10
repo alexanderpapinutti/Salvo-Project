@@ -15,7 +15,8 @@
     <div class="top_tab">
         <div class="my_links">
             <ol>
-                <li><button id='profile-login' class="login-button" onclick="openForm()" >Login/Register</button></li>
+                <li><button id='profile-login' class="login-button" onclick="openForm()">Login/Register</button></li>
+                <li><button id='create_game' class="create-button" onclick="createNewGame()">New Game</button></li>
             </ol>
         </div>
         <div id="logged-user"></div>
@@ -49,8 +50,10 @@
         <div id="leaderBoard"></div>
     </div>
     <div id="games-list">
-        <div>
-            <h1>Your Games</h1>
+        <div class="title">
+            <div>
+                <h1>Your Games</h1>
+            </div>
         </div>
         <div id="logged_player_games"></div>
     </div>

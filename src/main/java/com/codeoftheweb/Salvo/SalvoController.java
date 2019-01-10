@@ -1,13 +1,10 @@
 package com.codeoftheweb.Salvo;
 
-import org.hibernate.type.ListType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -32,6 +29,32 @@ public class SalvoController {
     private SalvoRepository salvoRepository;
     @Autowired
     private ScoreRepository scoreRepository;
+
+    @RequestMapping("/games")
+    public Map<String, Object> getAll(Authentication authentication) {
+        Map<String, Object> map = new HashMap<>();
+        if(authentication != null) {
+            map.put("currentPlayer", playerRepository.findByUserName(authentication.getName()));
+        }
+        map.put("games", gameRepository
+                .findAll()
+                .stream()
+                .map(game -> makeGameDTO(game))
+                .collect(Collectors.toList()));
+        return map;
+    }
+
+    @RequestMapping(path = "/games", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> createNewGame(Authentication authentication) {
+        if(authentication.isAuthenticated()){
+            Game newGame = new Game();
+            gameRepository.save(newGame);
+            GamePlayer gamePlayer = gamePlayerRepository.save(new GamePlayer(currentPlayer(authentication), newGame));
+            return new ResponseEntity<>(makeMap("newGamePlayer", gamePlayer.getId()), HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(makeMap("error", "Can't create game"), HttpStatus.UNAUTHORIZED);
+        }
+    }
 
     @RequestMapping(path = "/players", method = RequestMethod.GET)
     public ResponseEntity<Map<String,Object>> getPlayer(Authentication authentication) {
@@ -98,7 +121,9 @@ public class SalvoController {
 
     @RequestMapping(value = "/game_view/{id}")
     public Map<String,Object> getURLById (@PathVariable Long id) {
+
         GamePlayer gamePlayer = gamePlayerRepository.findOne(id);
+
         GamePlayer enemy = getEnemyGamePlayer(gamePlayer);
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("game", makeGameDTO(gamePlayer.getGame()));
@@ -116,19 +141,6 @@ public class SalvoController {
                 .map(salvo -> makeSalvoDTO(salvo))
                 .collect(Collectors.toList()));
         return dto;
-    }
-
-    @RequestMapping("/games")
-    public Map<String, Object> getAll(Authentication authentication) {
-        Map<String, Object> map = new HashMap<>();
-        if(authentication != null)
-        map.put("currentPlayer", playerRepository.findByUserName(authentication.getName()));
-        map.put("games", gameRepository
-                .findAll()
-                .stream()
-                .map(game -> makeGameDTO(game))
-                .collect(Collectors.toList()));
-        return map;
     }
 
     private Map<String, Object> makeGameDTO(Game game) {
@@ -163,8 +175,6 @@ public class SalvoController {
         return dto;
     }
 
-
-
     private Map <String, Object> makeShipDTO (Ship ship){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("type", ship.getType());
@@ -184,6 +194,10 @@ public class SalvoController {
         Map<String, Object> map = new HashMap<>();
         map.put(key, value);
         return map;
+    }
+
+    private Player currentPlayer (Authentication authentication){
+        return (Player) playerRepository.findByUserName(authentication.getName());
     }
 }
 

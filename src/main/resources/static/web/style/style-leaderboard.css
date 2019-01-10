@@ -8,6 +8,10 @@ input[type=text], input[type=password] {
 	font-size:16px;
 }
 
+#create_game {
+    width: 200px;
+}
+
 #join_game {
     border: none;
     background: coral;

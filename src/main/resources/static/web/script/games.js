@@ -1,12 +1,12 @@
 var modal = document.getElementById('modal-wrapper');
 var errorMsg = document.getElementById("errorMsg");
 
-function showGameList() {
-    document.getElementById("games-list").style.display = 'block';
+function show (elementId){
+    $("#"+elementId).show();
 }
 
-function hideGameList() {
-    document.getElementById("games-list").style.display = 'none';
+function hide (elementId){
+    $("#"+elementId).hide();
 }
 
 window.onclick = function (event) {
@@ -15,31 +15,43 @@ window.onclick = function (event) {
     }
 }
 
+//function createNewGame () {
+//    var currentPlayer = $("#current-player").val();
+//    fetch("/api/games", {
+//            credentials: 'include',
+//            method: 'POST',
+//            headers: {
+//                'Accept': 'application/json',
+//                'Content-Type': 'application/x-www-form-urlencoded'
+//            },
+////            body: 'newGamePlayer=' + currentPlayer,
+//        })
+//
+//        .then(r => {console.log(r.status)})
+//        .catch(e => console.log(e))
+//}
+//
+//function getCurrentPlayer () {
+//    $.getJSON("/api/games", function (response) {
+//        return response.currentPlayer.game;
+//    })
+//}
+
 function isLogedIn() {
-    fetch("/api/games", {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-        })
-        .then(r => r.json())
-        .then(response => {
-            if (response.currentPlayer != null) {
-                document.getElementById('logged-user').innerHTML = '<p class="logged_in_user">You are logged in as "' + response.currentPlayer.userName + '"</p>';
+    $.getJSON("/api/games", function (response) {
+        if (response.currentPlayer != null) {
+                document.getElementById('logged-user').innerHTML = '<p class="logged_in_user">You are logged in as <div id="current-player">' + response.currentPlayer.userName + '</div></p>';
                 document.getElementById('profile-login').innerHTML = 'Logout';
-                showGameList();
+                show("games-list");
                 loadGameList();
+                show("create_game");
 
-            } else {
+        } else {
                 clearUsername();
-                hideGameList();
-            }
-        })
-
-        .catch(e => console.log(e))
-
+                hide("games-list");
+                hide("create_game");
+        }
+    })
 }
 
 function clearUsername() {
@@ -69,19 +81,11 @@ function openForm() {
     errorMsg.innerHTML = '';
     let loginToggle = document.getElementById('profile-login').innerHTML;
     if (loginToggle == "Login/Register") {
-        showForm();
+        show("modal-wrapper");
     } else {
         logOut();
     }
 
-}
-
-function closeForm() {
-    document.getElementById("modal-wrapper").style.display = "none";
-}
-
-function showForm() {
-    document.getElementById("modal-wrapper").style.display = "block";
 }
 
 function signUp() {
@@ -99,13 +103,12 @@ function signUp() {
 
         .then(r => {
             if (r.status == 201) {
-                closeForm();
+                hide("modal-wrapper")
                 login();
                 isLogedIn();
                 document.getElementById('profile-login').innerHTML = 'Logout';
             }
             if (r.status == 409) {
-                console.log(r)
                 errorMsg.innerHTML = '*Account already in use';
             }
         })
@@ -114,7 +117,6 @@ function signUp() {
 }
 
 function login() {
-
     var username = $("#username").val();
     var password = $("#password").val();
     fetch("/api/login", {
@@ -129,7 +131,7 @@ function login() {
         .then(r => {
             if (r.status == 200) {
                 document.getElementById('profile-login').innerHTML = 'Logout';
-                closeForm();
+                hide("modal-wrapper");
                 swal("Success!", "You Logged In Successfully")
                 isLogedIn();
             } else if (r.status == 401) {
@@ -145,36 +147,37 @@ function loadGameList() {
         var grid = "<table class='table table-hover table-dark'>";
         grid += '<tbody>';
         grid += '<tr>';
-        grid += '<th id=leader-board-header>Game</th>';
-        grid += '<th id=leader-board-header>Players</th>';
+        grid += '<th id=leader-board-header>Game Id</th>';
+        grid += '<th id=leader-board-header>Number of Players</th>';
         grid += '<th id=leader-board-header>Continue Playing</th>';
         grid += '</tr>';
         var numberOfGames = data.games.length;
-        var enemy, user, userId;
-        for (var i = 0; i < numberOfGames; i++) {      
-            for (var j = 0; j < data.games[i].gamePlayers.length; j++){                
-                if (data.games[i].gamePlayers[j].player.userName == data.currentPlayer.userName){
-                    user = data.games[i].gamePlayers[j].player.userName;
-                    userId = data.games[i].gamePlayers[j].gamePlayerId;
-                    if (data.games[i].gamePlayers[j+1] != null){
-                        enemy = data.games[i].gamePlayers[j+1].player.userName;
-                        grid += "<tr>";
-                        grid += "<td id='leader-board-column'>" + data.games[i].creationDate + "</td>";
-                        grid += "<td id='leader-board-column'><b>" +  user + "</b> vs " + enemy + "</td>";
-                    }else if (data.games[i].gamePlayers[j-1] != null){
-                        enemy = data.games[i].gamePlayers[j-1].player.userName;
-                        grid += "<tr>";
-                        grid += "<td id='leader-board-column'>" + data.games[i].creationDate + "</td>";
-                        grid += "<td id='leader-board-column'><b>" +  user + "</b> vs " + enemy + "</td>";
-                    }else {
-                        grid += "<tr>";
-                        grid += "<td id='leader-board-column'>" + data.games[i].creationDate + "</td>";
-                        grid += "<td id='leader-board-column'><b>" +  user + "</b></td>";
-                    }
-                    grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + userId + "'>Join</a></button></td>";
-                    grid += "</tr>";                
-                }
+        var enemy, user, gamePlayerId, numberOfPlayers, gameId;
+        for (var i = 0; i < numberOfGames; i++) {
+            gameId = data.games[i].gameId;
+            numberOfPlayers = data.games[i].gamePlayers.length;
+            grid += '<tr>';
+            if (data.games[i].gamePlayers[1] != null){
+                var player1 = data.games[i].gamePlayers[1].player.userName;
+                var gamePlayerId1 = data.games[i].gamePlayers[1].gamePlayerId;
+                var player2 = data.games[i].gamePlayers[0].player.userName
+                var gamePlayerId2 = data.games[i].gamePlayers[0].gamePlayerId;
+                grid += "<td>" + gameId + "</td>";
+                grid += "<td>" + numberOfPlayers + "</td>";
+                if (player1 == data.currentPlayer.userName ){
+                    grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + gamePlayerId1 + "'>Return</a></button></td>";
+                }else if ( player2 == data.currentPlayer.userName){
+                    grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + gamePlayerId2 + "'>Return</a></button></td>";
+                }else {
+                    grid += "<td id='leader-board-column'></td>";
+                } 
+            }else {
+                var gamePlayerId = data.games[i].gamePlayers[0].gamePlayerId;
+                grid += "<td>" + gameId + "</td>";
+                grid += "<td>" + numberOfPlayers + "</td>";
+                grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + gamePlayerId + "'>Join</a></button></td>"
             }
+            grid += "</tr>";
         }
         grid += '</tbody>'
         grid += '</table>'
@@ -229,4 +232,4 @@ function loadLeaderBoard() {
 isLogedIn();
 
 loadLeaderBoard();
-                  
+
