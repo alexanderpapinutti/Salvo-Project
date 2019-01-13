@@ -1,55 +1,53 @@
 var modal = document.getElementById('modal-wrapper');
 var errorMsg = document.getElementById("errorMsg");
 
-function show (elementId){
-    $("#"+elementId).show();
+function show(elementId) {
+    $("#" + elementId).show();
 }
 
-function hide (elementId){
-    $("#"+elementId).hide();
+function hide(elementId) {
+    $("#" + elementId).hide();
 }
 
 window.onclick = function (event) {
     if (event.target == modal) {
-        closeForm();
+        hide('modal-wrapper');
     }
 }
 
-//function createNewGame () {
-//    var currentPlayer = $("#current-player").val();
-//    fetch("/api/games", {
-//            credentials: 'include',
-//            method: 'POST',
-//            headers: {
-//                'Accept': 'application/json',
-//                'Content-Type': 'application/x-www-form-urlencoded'
-//            },
-////            body: 'newGamePlayer=' + currentPlayer,
-//        })
-//
-//        .then(r => {console.log(r.status)})
-//        .catch(e => console.log(e))
-//}
-//
-//function getCurrentPlayer () {
-//    $.getJSON("/api/games", function (response) {
-//        return response.currentPlayer.game;
-//    })
-//}
+function createNewGame() {
+    fetch("/api/games", {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+        })
+        .then(r => {
+            if (r.status == 201) {
+                r.json();
+                location.replace('/web/game.html?gp=' + r.newGamePlayerId);
+            } else {
+                alert(r.status);
+            }
+        })
+        .catch(e => console.log(e))
+}
 
 function isLogedIn() {
     $.getJSON("/api/games", function (response) {
         if (response.currentPlayer != null) {
-                document.getElementById('logged-user').innerHTML = '<p class="logged_in_user">You are logged in as <div id="current-player">' + response.currentPlayer.userName + '</div></p>';
-                document.getElementById('profile-login').innerHTML = 'Logout';
-                show("games-list");
-                loadGameList();
-                show("create_game");
+            document.getElementById('logged-user').innerHTML = '<p class="logged_in_user">You are logged in as <div id="current-player">' + response.currentPlayer.userName + '</div></p>';
+            document.getElementById('profile-login').innerHTML = 'Logout';
+            show("games-list");
+            loadGameList();
+            show("create_game");
 
         } else {
-                clearUsername();
-                hide("games-list");
-                hide("create_game");
+            clearUsername();
+            hide("games-list");
+            hide("create_game");
         }
     })
 }
@@ -144,7 +142,8 @@ function login() {
 function loadGameList() {
     $.getJSON("/api/games", function (data) {
         $('#logged_player_games').empty();
-        var grid = "<table class='table table-hover table-dark'>";
+        var grid = "<div class='scroll-table'>"
+        grid += "<table class='table table-hover table-dark'>";
         grid += '<tbody>';
         grid += '<tr>';
         grid += '<th id=leader-board-header>Game Id</th>';
@@ -157,22 +156,28 @@ function loadGameList() {
             gameId = data.games[i].gameId;
             numberOfPlayers = data.games[i].gamePlayers.length;
             grid += '<tr>';
-            if (data.games[i].gamePlayers[1] != null){
+            if (data.games[i].gamePlayers[1] != null) {
                 var player1 = data.games[i].gamePlayers[1].player.userName;
                 var gamePlayerId1 = data.games[i].gamePlayers[1].gamePlayerId;
                 var player2 = data.games[i].gamePlayers[0].player.userName
                 var gamePlayerId2 = data.games[i].gamePlayers[0].gamePlayerId;
                 grid += "<td>" + gameId + "</td>";
                 grid += "<td>" + numberOfPlayers + "</td>";
-                if (player1 == data.currentPlayer.userName ){
+                if (player1 == data.currentPlayer.userName) {
                     grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + gamePlayerId1 + "'>Return</a></button></td>";
-                }else if ( player2 == data.currentPlayer.userName){
+                } else if (player2 == data.currentPlayer.userName) {
                     grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + gamePlayerId2 + "'>Return</a></button></td>";
-                }else {
+                } else {
                     grid += "<td id='leader-board-column'></td>";
-                } 
-            }else {
-                var gamePlayerId = data.games[i].gamePlayers[0].gamePlayerId;
+                }
+            } else if (data.currentPlayer.userName == data.games[i].gamePlayers[0].player.userName) {
+                gamePlayerId = data.games[i].gamePlayers[0].gamePlayerId;
+                grid += "<td>" + gameId + "</td>";
+                grid += "<td>" + numberOfPlayers + "</td>";
+                grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + gamePlayerId + "'>Return</a></button></td>"
+
+            } else {
+                gamePlayerId = data.games[i].gamePlayers[0].gamePlayerId;
                 grid += "<td>" + gameId + "</td>";
                 grid += "<td>" + numberOfPlayers + "</td>";
                 grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + gamePlayerId + "'>Join</a></button></td>"
@@ -181,6 +186,7 @@ function loadGameList() {
         }
         grid += '</tbody>'
         grid += '</table>'
+        grid += '</div>'
         $('#logged_player_games').append(grid);
     })
 
@@ -232,4 +238,3 @@ function loadLeaderBoard() {
 isLogedIn();
 
 loadLeaderBoard();
-

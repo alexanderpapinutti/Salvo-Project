@@ -1,50 +1,70 @@
-
 .emptyCells {
-    border: 3px solid;
+    border: 3px solid black;
+    
     width: 40px;
     height: 40px;
-    background-image: url('image/header-background.jpg');
+    background: rgba(0, 0, 0, 0.3);
 }
 
-#tableContainer{
+#tableContainer {
     margin-right: 40px;
 }
 
 body {
-    background-image: url('image/backgroundImage.jpg');
+    background-image: url('image/game-page-background.png');
+    background-size: cover;                      
+    background-repeat:   no-repeat;
+    height: 100vh;
+    background-position: center center;
 }
 
-.tables-div{
+
+
+
+.tables-div {
     display: flex;
 }
 
-#leader-board-header {
-    color: white;
+.center-title {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
 }
 
-#leader-board-column {
-    color: white;
+#player1 {
+    color: black;
+    font-family: fantasy;
+    font-size: 20px;
 }
 
-.center-players{
+#player2 {
+    color: black;
+   
+    font-family: fantasy;
+    font-size: 20px;
+}
+
+
+.center-players {
     display: flex;
     align-items: center;
 }
 
 h3 {
-    color: white;
+    color: black;
     font-family: impact;
 }
 
-.myRowHeaders{
-    background-image: url('image/header-background.jpg');
+.myRowHeaders {
+    background: none;
     width: 40px;
     height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: impact;
-    color: white;
+    font-family: fantasy;
+    font-size: 30px;
+    color: black;
 }
 
 .title {
@@ -60,7 +80,7 @@ h3 {
 }
 
 .enemy-guess {
-    background-color: green;
+    background-color: #2a72b9;
     border: solid;
 }
 
@@ -68,11 +88,19 @@ h3 {
     background-color: orange;
 }
 
-.myColumnHeaders{
-    color: white;
-    background-image: url('image/header-background.jpg');
+.myColumnHeaders {
+    background: none;
+    color: black;
     width: 40px;
     height: 40px;
+    font-family: fantasy;
+    font-size: 30px;
+}
+
+.top-side {
+    display: flex;
+    width: 100%;
+    align-items: flex-start;
 }
 
 td:hover {
@@ -90,12 +118,25 @@ td:hover {
     border: solid;
 }
 
+.btn {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid black;
+}
 
+.btn:hover {
+    cursor: pointer;
+    background-color: salmon;
+}
+
+.btn a {
+    text-decoration: none;
+    color: black;
+}
 
 h1 {
     font-family: Impact;
-    color: white;
-    
+    color: black;
+
 }
 
 .ship-location.Patrol-Boat.enemy-guess {
@@ -114,11 +155,9 @@ h1 {
 }
 
 .salvo-location {
-    background-color: green;
+    background-color: #2a72b9;
     border: solid;
 }
 
-#this-game-players p{
-    color: white;
-    font-family: inherit;
-}
+
+

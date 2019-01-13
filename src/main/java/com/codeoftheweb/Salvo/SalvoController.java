@@ -46,13 +46,30 @@ public class SalvoController {
 
     @RequestMapping(path = "/games", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> createNewGame(Authentication authentication) {
-        if(authentication.isAuthenticated()){
+        if(authentication != null ){
             Game newGame = new Game();
             gameRepository.save(newGame);
-            GamePlayer gamePlayer = gamePlayerRepository.save(new GamePlayer(currentPlayer(authentication), newGame));
-            return new ResponseEntity<>(makeMap("newGamePlayer", gamePlayer.getId()), HttpStatus.CREATED);
+            GamePlayer gamePlayer = new GamePlayer(currentPlayer(authentication), newGame);
+            gamePlayerRepository.save(gamePlayer);
+            return new ResponseEntity<>(makeMap("newGamePlayerId", gamePlayer.getId()), HttpStatus.CREATED);
         }else{
             return new ResponseEntity<>(makeMap("error", "Can't create game"), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+//    @RequestMapping(path = "/games/{id}/players")
+//    public ResponseEntity<Map<String, Object>> playersOfGame(@PathVariable Long id, Authentication authentication) {
+//
+//
+//    }
+    @RequestMapping(path = "/games/{id}/players", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> joinGame(@PathVariable Long id, Authentication authentication) {
+        if(authentication != null ) {
+            GamePlayer gamePlayer = new GamePlayer(currentPlayer(authentication), gameRepository.findGameById(id));
+            gamePlayerRepository.save(gamePlayer);
+            return new ResponseEntity<>(makeMap("newGamePlayerId", gamePlayer.getId()), HttpStatus.CREATED);
+        }else{
+            return new ResponseEntity<>(makeMap("error", "Can't join game"), HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -120,26 +137,32 @@ public class SalvoController {
     }
 
     @RequestMapping(value = "/game_view/{id}")
-    public Map<String,Object> getURLById (@PathVariable Long id) {
-
+    public Map<String,Object> getURLById (@PathVariable Long id,
+                                          Authentication authentication) {
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
         GamePlayer gamePlayer = gamePlayerRepository.findOne(id);
 
-        GamePlayer enemy = getEnemyGamePlayer(gamePlayer);
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("game", makeGameDTO(gamePlayer.getGame()));
-        dto.put("userInfo", gamePlayer.getPlayer());
-        dto.put("enemyInfo", enemy.getPlayer());
-        dto.put("userShips", gamePlayer.getShips()
-        .stream().map(ship -> makeShipDTO(ship))
-        .collect(Collectors.toList()));
-        dto.put("userSalvos", gamePlayer.getSalvos()
-                .stream()
-                .map(salvo -> makeSalvoDTO(salvo))
-                .collect(Collectors.toList()));
-        dto.put("enemySalvos", enemy.getSalvos()
-                .stream()
-                .map(salvo -> makeSalvoDTO(salvo))
-                .collect(Collectors.toList()));
+        if (playerRepository.findByUserName(authentication.getName()).getId() == gamePlayer.getPlayer().getId()) {
+            GamePlayer enemy = getEnemyGamePlayer(gamePlayer);
+            dto.put("game", makeGameDTO(gamePlayer.getGame()));
+            dto.put("userInfo", gamePlayer.getPlayer());
+            dto.put("userShips", gamePlayer.getShips()
+                    .stream().map(ship -> makeShipDTO(ship))
+                    .collect(Collectors.toList()));
+            dto.put("userSalvos", gamePlayer.getSalvos()
+                    .stream()
+                    .map(salvo -> makeSalvoDTO(salvo))
+                    .collect(Collectors.toList()));
+            if (enemy != null) {
+                dto.put("enemyInfo", enemy.getPlayer());
+                dto.put("enemySalvos", enemy.getSalvos()
+                        .stream()
+                        .map(salvo -> makeSalvoDTO(salvo))
+                        .collect(Collectors.toList()));
+            }
+        } else {
+            dto.put("Error", "Not your game");
+        }
         return dto;
     }
 

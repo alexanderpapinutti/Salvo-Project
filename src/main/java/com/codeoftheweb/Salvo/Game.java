@@ -33,7 +33,9 @@ public class Game {
         return gamePlayers.stream().map(sub -> sub.getPlayer()).collect(toList());
     }
 
-    public Game() { }
+    public Game() {
+        this.created = new Date();
+    }
 
     public Set<GamePlayer> getGamePlayers() {
         return gamePlayers;

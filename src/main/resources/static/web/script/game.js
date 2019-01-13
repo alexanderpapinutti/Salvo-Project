@@ -75,15 +75,13 @@ function getData() {
         printSalvos('#U', mainData.enemySalvos, 'enemy-guess');
         mainData.player1 = data.userInfo.userName;
         mainData.player2 = data.enemyInfo.userName;
-        $("#this-game-players").append(displayPlayers(mainData.player1, mainData.player2));
+        displayPlayers(mainData.player1, mainData.player2);
     })
 }
 
 function displayPlayers(player1, player2) {
-    var display = "<p>";
-    display += player1 + "(you) vs. " + player2;
-    display += "</p>";
-    return display;
+    document.getElementById("player1").innerHTML = player1;
+    document.getElementById("player2").innerHTML = player2;
 }
 
 

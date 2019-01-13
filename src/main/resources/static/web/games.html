@@ -26,7 +26,7 @@
         <div class="modal-content animate">
 
             <div class="imgcontainer">
-                <span onclick="closeForm()" class="close" title="Close PopUp">&times;</span>
+                <span onclick="hide('modal-wrapper')" class="close" title="Close PopUp">&times;</span>
                 <img src="style/image/profile-img.png" alt="Avatar" class="avatar">
                 <h1 style="text-align:center">Enter Authentification Details</h1>
             </div>
@@ -41,21 +41,27 @@
         </div>
 
     </div>
-    <div class="title">
-        <div>
-            <h1>Leader Board</h1>
+    <div class="center-title">
+        <div class="title">
+            <div>
+                <h1>Leader Board</h1>
+            </div>
         </div>
     </div>
     <div class="content">
         <div id="leaderBoard"></div>
     </div>
     <div id="games-list">
-        <div class="title">
-            <div>
-                <h1>Your Games</h1>
+        <div class="center-title">
+            <div class="title">
+                <div>
+                    <h1>Your Games</h1>
+                </div>
             </div>
         </div>
+
         <div id="logged_player_games"></div>
+
     </div>
 </body>
 

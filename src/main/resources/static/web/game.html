@@ -11,23 +11,42 @@
 
 <body>
     <div class="container">
-        <h1>Ship Locations</h1>
-
-        <div class="tables-div">
-            <div class='center-players'>
-                <div id="this-game-players"></div>
-            </div>
-            
+        <div class="top-side">
             <div>
-                <div><h3> MotherBoard </h3></div>
+                <button class="btn"><a href="games.html">Return To Main Page</a></button>
+            </div>
+        </div>
+
+        <div class="title">
+            <div>
+                <h1>BATTLE!</h1>
+            </div>
+        </div>
+        <div class="tables-div">
+            <div>
+                <div class="center-title">
+
+                    <div>
+                        <h3> MotherBoard </h3>
+                    </div>
+                    <div>
+                        <p id="player1"></p>
+                    </div>
+                </div>
                 <div id="tableContainer"></div>
             </div>
             <div>
-                <div><h3> SalvoBoard </h3></div>
+                <div class="center-title">
+                    <div>
+                        <h3> SalvoBoard </h3>
+                    </div>
+                    <div>
+                        <p id="player2"></p>
+                    </div>
+                </div>
                 <div id="tableContainerSalvos"></div>
             </div>
         </div>
-        <div><button><a href="games.html">Return To Main Page</a></button></div>
     </div>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
