@@ -3,7 +3,7 @@
     
     width: 40px;
     height: 40px;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.5);
 }
 
 #tableContainer {
@@ -33,13 +33,14 @@ body {
 
 #player1 {
     color: black;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
     font-family: fantasy;
     font-size: 20px;
 }
 
 #player2 {
     color: black;
-   
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
     font-family: fantasy;
     font-size: 20px;
 }
@@ -52,6 +53,7 @@ body {
 
 h3 {
     color: black;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
     font-family: impact;
 }
 
@@ -65,6 +67,7 @@ h3 {
     font-family: fantasy;
     font-size: 30px;
     color: black;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
 .title {
@@ -95,6 +98,7 @@ h3 {
     height: 40px;
     font-family: fantasy;
     font-size: 30px;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
 .top-side {
@@ -131,11 +135,13 @@ td:hover {
 .btn a {
     text-decoration: none;
     color: black;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
 h1 {
     font-family: Impact;
     color: black;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 
 }
 

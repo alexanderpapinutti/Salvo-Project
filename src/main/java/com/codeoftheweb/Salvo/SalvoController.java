@@ -57,14 +57,21 @@ public class SalvoController {
         }
     }
 
-//    @RequestMapping(path = "/games/{id}/players")
-//    public ResponseEntity<Map<String, Object>> playersOfGame(@PathVariable Long id, Authentication authentication) {
+//    @RequestMapping(path = " /games/players/{id}/ships.", method = RequestMethod.POST)
+//    public ResponseEntity<Map<String, Object>> placeShips(@PathVariable Long id, @RequestBody Ship ships, Authentication authentication) {
+//
+//        new Ship(gameRepository.findGameById(id), , gamePlayerRepository.findGamePlayerById(id));
 //
 //
 //    }
     @RequestMapping(path = "/games/{id}/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> joinGame(@PathVariable Long id, Authentication authentication) {
         if(authentication != null ) {
+            if (gameRepository.findGameById(id).getPlayers().size() == 2){
+                return new ResponseEntity<>(makeMap("error", "This game is full"), HttpStatus.FORBIDDEN);
+            }else if (gameRepository.findGameById(id) == null){
+                return new ResponseEntity<>(makeMap("error", "No such game"), HttpStatus.FORBIDDEN);
+            }
             GamePlayer gamePlayer = new GamePlayer(currentPlayer(authentication), gameRepository.findGameById(id));
             gamePlayerRepository.save(gamePlayer);
             return new ResponseEntity<>(makeMap("newGamePlayerId", gamePlayer.getId()), HttpStatus.CREATED);
@@ -161,7 +168,9 @@ public class SalvoController {
                         .collect(Collectors.toList()));
             }
         } else {
-            dto.put("Error", "Not your game");
+            dto.put("error", "Not your game");
+
+//            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Not your game"), HttpStatus.FORBIDDEN);
         }
         return dto;
     }

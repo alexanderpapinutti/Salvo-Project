@@ -19,17 +19,17 @@ input[type=text], input[type=password] {
     width: 200px;
 }
 
-#join_game {
+#return-game-button {
     border: black solid 2px;
     background: #2a72b9;
     
 }
 
-#join_game:hover {
+#return-game-button:hover {
     background: coral;
 }
 
-#join_game a{
+#return-game-button a{
     color: black;
     text-decoration: none;
 }
@@ -41,6 +41,7 @@ input[type=text], input[type=password] {
 
 .logged_in_user {
     font-family: Arial, Helvetica, sans-serif;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
 .imgcontainer {
@@ -86,11 +87,13 @@ body {
 #login-button{
     margin-top: 5px;
     width: 50%;
+    
 }
 
 ol li button {
     background: none;
     border: none;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 /* The Close Button (x) */
 .close {
@@ -130,6 +133,10 @@ ol li button {
 #logged-user {
     width: 20%;
     margin-top: 10px;
+}
+
+#current-player {
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
 .top_tab{
@@ -181,6 +188,7 @@ ol {
     margin-top: 10px;
     margin-bottom: 10px;
     border: solid 2px black;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
 

@@ -1,6 +1,10 @@
 var modal = document.getElementById('modal-wrapper');
 var errorMsg = document.getElementById("errorMsg");
 
+const mainData = {
+    numberOfPlayers: '',
+}
+
 function show(elementId) {
     $("#" + elementId).show();
 }
@@ -24,15 +28,10 @@ function createNewGame() {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
         })
-        .then(r => {
-            if (r.status == 201) {
-                r.json();
-                location.replace('/web/game.html?gp=' + r.newGamePlayerId);
-            } else {
-                alert(r.status);
-            }
-        })
+        .then(r => r.json())
+        .then(r => location.replace('/web/game.html?gp=' + r.newGamePlayerId))
         .catch(e => console.log(e))
+
 }
 
 function isLogedIn() {
@@ -132,10 +131,25 @@ function login() {
                 hide("modal-wrapper");
                 swal("Success!", "You Logged In Successfully")
                 isLogedIn();
+                document.getElementById
             } else if (r.status == 401) {
                 document.getElementById("errorMsg").innerHTML = '<p>*Enter a valid User Name or Password</p>';
             }
         })
+        .catch(e => console.log(e))
+}
+
+function joinGame(gameId, numberOfPlayers) {
+    fetch('/api/games/' + gameId + '/players', {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+        })
+        .then(r => r.json())
+        .then(r => location.replace('/web/game.html?gp=' + r.newGamePlayerId))
         .catch(e => console.log(e))
 }
 
@@ -161,26 +175,28 @@ function loadGameList() {
                 var gamePlayerId1 = data.games[i].gamePlayers[1].gamePlayerId;
                 var player2 = data.games[i].gamePlayers[0].player.userName
                 var gamePlayerId2 = data.games[i].gamePlayers[0].gamePlayerId;
-                grid += "<td>" + gameId + "</td>";
-                grid += "<td>" + numberOfPlayers + "</td>";
+                grid += "<td id='game-id'>" + gameId + "</td>";
+                grid += "<td>2</td>";
                 if (player1 == data.currentPlayer.userName) {
-                    grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + gamePlayerId1 + "'>Return</a></button></td>";
+                    grid += "<td id='leader-board-column'><button id='return-game-button'><a href='game.html?gp=" + gamePlayerId1 + "'>Return</a></button></td>";
                 } else if (player2 == data.currentPlayer.userName) {
-                    grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + gamePlayerId2 + "'>Return</a></button></td>";
+                    grid += "<td id='leader-board-column'><button id='return-game-button'><a href='game.html?gp=" + gamePlayerId2 + "'>Return</a></button></td>";
                 } else {
                     grid += "<td id='leader-board-column'></td>";
                 }
             } else if (data.currentPlayer.userName == data.games[i].gamePlayers[0].player.userName) {
                 gamePlayerId = data.games[i].gamePlayers[0].gamePlayerId;
-                grid += "<td>" + gameId + "</td>";
+                grid += "<td id='game-id'>" + gameId + "</td>";
                 grid += "<td>" + numberOfPlayers + "</td>";
-                grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + gamePlayerId + "'>Return</a></button></td>"
+                grid += "<td id='leader-board-column'><button id='return-game-button'><a href='game.html?gp=" + gamePlayerId + "'>Return</a></button></td>"
 
             } else {
+                mainData.numberOfPlayers = numberOfPlayers;
                 gamePlayerId = data.games[i].gamePlayers[0].gamePlayerId;
-                grid += "<td>" + gameId + "</td>";
-                grid += "<td>" + numberOfPlayers + "</td>";
-                grid += "<td id='leader-board-column'><button id='join_game'><a href='game.html?gp=" + gamePlayerId + "'>Join</a></button></td>"
+                grid += "<td id='game-id'>" + gameId + "</td>";
+                grid += "<td>" + mainData.numberOfPlayers + "</td>";
+                grid += "<td id='leader-board-column'><button id='join_game' onclick='joinGame("+gameId+")'>Join</button></td>";
+                
             }
             grid += "</tr>";
         }
