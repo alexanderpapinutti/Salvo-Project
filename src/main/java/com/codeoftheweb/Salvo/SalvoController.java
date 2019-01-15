@@ -70,7 +70,7 @@ public class SalvoController {
             return new ResponseEntity<>(makeMap("error", "This is not your game")
                     , HttpStatus.UNAUTHORIZED);
         }else if(gamePlayer.getShips().size() == 5) {
-            return new ResponseEntity<>(makeMap("error", "Ships have been placed already")
+            return new ResponseEntity<>(makeMap("error", "Ships have already been placed")
                     , HttpStatus.FORBIDDEN);
         } else if (ships.isEmpty()) {
             return new ResponseEntity<>(makeMap("error", "Missing Ships")
@@ -80,7 +80,7 @@ public class SalvoController {
                 ship.setGamePlayer(gamePlayer);
                 shipRepository.save(ship);
             }
-            return new ResponseEntity<>(makeMap("success", "Ships are created")
+            return new ResponseEntity<>(makeMap("success", "Ship was added")
                     , HttpStatus.CREATED);
         }
     }

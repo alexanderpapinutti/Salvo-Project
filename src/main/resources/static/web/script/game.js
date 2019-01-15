@@ -7,22 +7,41 @@ const mainData = {
     player1: '',
     player2: '',
     gamePlayerId: '',
+    userTable: '',
+    shipLocation: [],
 }
 
 loadGamePlayerData();
 
 function loadGamePlayerData() {
-
     $("#tableContainer").append(generateUserGrid("U", mainData.columnHeaders, mainData.rowHeaders));
     $("#tableContainerSalvos").append(generateUserGrid("S", mainData.columnHeaders, mainData.rowHeaders));
     getData();
+    var userTable = document.getElementById("U");
+    var salvoTable = document.getElementById("S");
+    placeShips(userTable);
+    
 
+}
+
+function placeShips(table) {
+    table.addEventListener('click', (e) => {
+        if (e.target.nodeName.toUpperCase() === 'TD') {
+            var gameId = e.target.id.toString();
+            var shipLocation = gameId.charAt(1) + gameId.charAt(2);
+            mainData.shipLocation.push(shipLocation);
+            console.log(mainData.shipLocation)
+           
+            e.target.classList.add('clicked');
+        }
+    });
 }
 
 function generateUserGrid(tableId, columnHeaders, rowHeaders) {
     let rows = rowHeaders.length;
     let cols = columnHeaders.length;
-    var grid = "<table>";
+    var grid = "<table id='" + tableId + "'>";
+
     for (row = 0; row <= rows; row++) {
         grid += "<tr>";
         var indexRow = $("tr").index(this) + row + 2;
@@ -39,6 +58,7 @@ function generateUserGrid(tableId, columnHeaders, rowHeaders) {
         grid += "</tr>";
 
     }
+
 
     return grid;
 }
@@ -90,15 +110,15 @@ function setGamePlayerId(data) {
 
 }
 
+
 function displayPlayers(player1, player2) {
     document.getElementById("player1").innerHTML = player1;
     document.getElementById("player2").innerHTML = player2;
 }
 
-function setShip() {
-    var ship = 'Submarine';
-    var locations = ["A1", "B1", "C1"];
-    fetch("/api/games/players/"+ mainData.gamePlayerId +"/ships", {
+function setShip(ship) {
+
+    fetch("/api/games/players/" + mainData.gamePlayerId + "/ships", {
             credentials: 'include',
             method: 'POST',
             headers: {
@@ -106,11 +126,19 @@ function setShip() {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify([{
-                    type: ship,
-                    location: locations
+                type: ship,
+                location: mainData.shipLocation
             }]),
-         })
-        .then(r => r.json().then(e => console.log(e)))
+        })
+        .then (r => {
+            
+            if (r.status == 403){
+                alert("All ships have been added");
+            }else {
+                r.json().then(location.reload());
+            }
+        })
+
+        
         .catch(e => console.log(e))
 }
-          
