@@ -57,13 +57,33 @@ public class SalvoController {
         }
     }
 
-//    @RequestMapping(path = " /games/players/{id}/ships.", method = RequestMethod.POST)
-//    public ResponseEntity<Map<String, Object>> placeShips(@PathVariable Long id, @RequestBody Ship ships, Authentication authentication) {
-//
-//        new Ship(gameRepository.findGameById(id), , gamePlayerRepository.findGamePlayerById(id));
-//
-//
-//    }
+    @RequestMapping(path = "/games/players/{gamePlayerId}/ships", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> placeShips(@PathVariable Long gamePlayerId, @RequestBody List<Ship> ships, Authentication authentication) {
+        GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
+        if(authentication == null){
+            return new ResponseEntity<>(makeMap("error", "No user is logged in")
+                    , HttpStatus.UNAUTHORIZED);
+        }else if(gamePlayer == null){
+            return new ResponseEntity<>(makeMap("error", "This user does not exist")
+                    , HttpStatus.UNAUTHORIZED);
+        }else if(gamePlayer.getPlayer() != currentPlayer(authentication)){
+            return new ResponseEntity<>(makeMap("error", "This is not your game")
+                    , HttpStatus.UNAUTHORIZED);
+        }else if(gamePlayer.getShips().size() == 5) {
+            return new ResponseEntity<>(makeMap("error", "Ships have been placed already")
+                    , HttpStatus.FORBIDDEN);
+        } else if (ships.isEmpty()) {
+            return new ResponseEntity<>(makeMap("error", "Missing Ships")
+                    , HttpStatus.FORBIDDEN);
+        }else{
+            for (Ship ship : ships) {
+                ship.setGamePlayer(gamePlayer);
+                shipRepository.save(ship);
+            }
+            return new ResponseEntity<>(makeMap("success", "Ships are created")
+                    , HttpStatus.CREATED);
+        }
+    }
     @RequestMapping(path = "/games/{id}/players", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> joinGame(@PathVariable Long id, Authentication authentication) {
         if(authentication != null ) {

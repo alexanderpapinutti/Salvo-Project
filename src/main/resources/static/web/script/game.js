@@ -6,6 +6,7 @@ const mainData = {
     rowHeaders: ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"],
     player1: '',
     player2: '',
+    gamePlayerId: '',
 }
 
 loadGamePlayerData();
@@ -75,8 +76,18 @@ function getData() {
         printSalvos('#U', mainData.enemySalvos, 'enemy-guess');
         mainData.player1 = data.userInfo.userName;
         mainData.player2 = data.enemyInfo.userName;
+        setGamePlayerId(data);
         displayPlayers(mainData.player1, mainData.player2);
     })
+}
+
+function setGamePlayerId(data) {
+    for (var i = 0; i < data.game.gamePlayers.length; i++) {
+        if (data.game.gamePlayers[i].player.userName == data.userInfo.userName) {
+            mainData.gamePlayerId = data.game.gamePlayers[i].gamePlayerId;
+        }
+    }
+
 }
 
 function displayPlayers(player1, player2) {
@@ -84,4 +95,22 @@ function displayPlayers(player1, player2) {
     document.getElementById("player2").innerHTML = player2;
 }
 
-
+function setShip() {
+    var ship = 'Submarine';
+    var locations = ["A1", "B1", "C1"];
+    fetch("/api/games/players/"+ mainData.gamePlayerId +"/ships", {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify([{
+                    type: ship,
+                    location: locations
+            }]),
+         })
+        .then(r => r.json().then(e => console.log(e)))
+        .catch(e => console.log(e))
+}
+          
