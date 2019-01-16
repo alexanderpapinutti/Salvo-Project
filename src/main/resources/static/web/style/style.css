@@ -14,15 +14,47 @@ body {
     background-image: url('image/game-page-background.png');
     background-size: cover;                      
     background-repeat:   no-repeat;
-    height: 100vh;
+    height: 100%;
     background-position: center center;
 }
 
 
+.ship-selection {
+    height: 300px;
+    width: 250px;
+    background: rgb(0,0,0,0.5);
+    border: dashed white 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
+ul li button{
+    background: black;
+    font-size: 12px;
+    border: solid 2px white;
+    color: white;
+    margin-top: 10px;
+    margin-right: 5px;
+}
+
+ul li button:hover{
+    background: coral;
+}
+
+ul {
+    list-style-type: none;
+}
+
+.ship-list {
+    
+}
 
 .tables-div {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
 }
 
 .center-title {

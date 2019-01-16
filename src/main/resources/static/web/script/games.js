@@ -157,12 +157,12 @@ function loadGameList() {
     $.getJSON("/api/games", function (data) {
         $('#logged_player_games').empty();
         var grid = "<div class='scroll-table'>"
-        grid += "<table class='table table-hover table-dark'>";
+        grid += "<table class='table table-hover table-dark text-center'>";
         grid += '<tbody>';
         grid += '<tr>';
-        grid += '<th id=leader-board-header>Game Id</th>';
-        grid += '<th id=leader-board-header>Number of Players</th>';
-        grid += '<th id=leader-board-header>Continue Playing</th>';
+        grid += '<th id=leader-board-header class="text-center">Game Id</th>';
+        grid += '<th id=leader-board-header class="text-center">Number of Players</th>';
+        grid += '<th id=leader-board-header class="text-center">Continue Playing</th>';
         grid += '</tr>';
         var numberOfGames = data.games.length;
         var enemy, user, gamePlayerId, numberOfPlayers, gameId;
@@ -210,14 +210,15 @@ function loadGameList() {
 
 function loadLeaderBoard() {
     $.getJSON("/api/leaderBoard", function (data) {
-        var grid = "<table class='table table-hover table-dark'>";
+        var grid = "<table class='table table-hover table-dark text-center'>";
         grid += '<tbody>';
         grid += '<tr>';
-        grid += '<th id=leader-board-header>Name</th>';
-        grid += '<th id=leader-board-header>Total</th>';
-        grid += '<th id=leader-board-header>Won</th>';
-        grid += '<th id=leader-board-header>Lost</th>';
-        grid += '<th id=leader-board-header>Tied</th>';
+        grid += '<th id=leader-board-header class="text-center">Name</th>';
+        grid += '<th id=leader-board-header class="text-center">Total</th>';
+        grid += '<th id=leader-board-header class="text-center">Won</th>';
+        grid += '<th id=leader-board-header class="text-center">Lost</th>';
+        grid += '<th id=leader-board-header class="text-center">Tied</th>';
+      
         grid += '</tr>';
         let rows = data.length;
         var byProperty = function (prop) {

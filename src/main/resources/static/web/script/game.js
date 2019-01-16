@@ -9,6 +9,12 @@ const mainData = {
     gamePlayerId: '',
     userTable: '',
     shipLocation: [],
+    shipType: '',
+    possibleCells: [],
+    horizontalCells: [],
+    verticalCells: [],
+    adjacentCells: [],
+    placingShip: true,
 }
 
 loadGamePlayerData();
@@ -20,22 +26,106 @@ function loadGamePlayerData() {
     var userTable = document.getElementById("U");
     var salvoTable = document.getElementById("S");
     placeShips(userTable);
-    
+    allowedGridCells();
 
+
+}
+
+function letter(number) {
+    if (number == 1) {
+        return number = 'A';
+    } else if (number == 2) {
+        return number = 'B';
+    } else if (number == 3) {
+        return number = 'C';
+    } else if (number == 4) {
+        return number = 'D';
+    } else if (number == 5) {
+        return number = 'E';
+    } else if (number == 6) {
+        return number = 'F';
+    } else if (number == 7) {
+        return number = 'G';
+    } else if (number == 8) {
+        return number = 'H';
+    } else if (number == 9) {
+        return number = 'I';
+    } else if (number == 10) {
+        return number = 'J';
+    } else {
+        return null;
+    }
+}
+
+function number(letter) {
+    if (letter == 'A') {
+        return letter = 1;
+    } else if (letter == 'B') {
+        return letter = 2;
+    } else if (letter == 'C') {
+        return letter = 3;
+    } else if (letter == 'D') {
+        return letter = 4;
+    } else if (letter == 'E') {
+        return letter = 5;
+    } else if (letter == 'F') {
+        return letter = 6;
+    } else if (letter == 'G') {
+        return letter = 7;
+    } else if (letter == 'H') {
+        return letter = 8;
+    } else if (letter == 'I') {
+        return letter = 9;
+    } else if (letter == 'J') {
+        return letter = 10;
+    } else {
+        return null;
+    }
 }
 
 function placeShips(table) {
     table.addEventListener('click', (e) => {
         if (e.target.nodeName.toUpperCase() === 'TD') {
-            var gameId = e.target.id.toString();
-            var shipLocation = gameId.charAt(1) + gameId.charAt(2);
-            mainData.shipLocation.push(shipLocation);
-            console.log(mainData.shipLocation)
-           
-            e.target.classList.add('clicked');
+            if (mainData.placingShip == true) {
+                mainData.adjacentCells = [];
+                mainData.verticalCells = [];
+                mainData.horizontalCells = [];
+                var gameId = e.target.id.toString();
+                var rowHeader = gameId.charAt(1);
+                var columnHeader = gameId.charAt(2);
+                var adjacentRows = number(rowHeader);
+                var shipLocation = rowHeader + columnHeader;
+                mainData.shipLocation.push(shipLocation);
+                var adjacentColumns = parseInt(columnHeader);
+                for (var i = 1; i < 5; i++) {
+                    if ((adjacentColumns + i) < 11) {
+                        var cell = rowHeader + (adjacentColumns + i);
+                        mainData.adjacentCells.push(cell)
+                    }
+                    if ((adjacentColumns - i) > 0) {
+                        var cell = rowHeader + (adjacentColumns - i);
+                        mainData.adjacentCells.push(cell);
+                    }
+                    if ((adjacentRows + i) < 11) {
+                        var row = letter(adjacentRows + i);
+                        var cell = row + adjacentColumns;
+                        mainData.adjacentCells.push(cell);
+                    }
+                    if ((adjacentRows - i) > 0) {
+                        var row = letter(adjacentRows - i);
+                        var cell = row + adjacentColumns;
+                        mainData.adjacentCells.push(cell);
+                    }
+                }
+                console.log(mainData.adjacentCells)
+                e.target.classList.add('clicked');
+            }
+
         }
     });
 }
+
+
 
 function generateUserGrid(tableId, columnHeaders, rowHeaders) {
     let rows = rowHeaders.length;
@@ -85,6 +175,14 @@ function printShips(arrayOfShips) {
     }
 }
 
+function allowedGridCells() {
+    for (var i = 0; i < mainData.rowHeaders.length; i++) {
+        for (var j = 1; j < mainData.columnHeaders.length; j++) {
+            mainData.possibleCells.push(mainData.rowHeaders[i] + mainData.columnHeaders[j])
+        }
+    }
+}
+
 function getData() {
     $.getJSON("/api/game_view/" + location.search.split("=")[1], function (data) {
         console.log(data)
@@ -110,14 +208,14 @@ function setGamePlayerId(data) {
 
 }
 
-
 function displayPlayers(player1, player2) {
     document.getElementById("player1").innerHTML = player1;
     document.getElementById("player2").innerHTML = player2;
 }
 
 function setShip(ship) {
-
+    mainData.placingShip = true;
+    mainData.shipType = ship;
     fetch("/api/games/players/" + mainData.gamePlayerId + "/ships", {
             credentials: 'include',
             method: 'POST',
@@ -130,15 +228,15 @@ function setShip(ship) {
                 location: mainData.shipLocation
             }]),
         })
-        .then (r => {
-            
-            if (r.status == 403){
-                alert("All ships have been added");
-            }else {
+        .then(r => {
+
+            if (r.status == 403) {
+                swal("Denied", "All ships have been placed");
+            } else {
                 r.json().then(location.reload());
             }
         })
 
-        
+
         .catch(e => console.log(e))
 }
