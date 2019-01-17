@@ -11,10 +11,17 @@ const mainData = {
     shipLocation: [],
     shipType: '',
     possibleCells: [],
-    horizontalCells: [],
-    verticalCells: [],
     adjacentCells: [],
-    placingShip: true,
+    shipPlacementSteps: 0,
+    shipsArray: [],
+    locationsArray: [],
+    topCells: [],
+    bottomCells: [],
+    rightCells: [],
+    leftCells: [],
+
+    shipSize: '',
+    placedShips: [],
 }
 
 loadGamePlayerData();
@@ -25,10 +32,8 @@ function loadGamePlayerData() {
     getData();
     var userTable = document.getElementById("U");
     var salvoTable = document.getElementById("S");
-    placeShips(userTable);
+    clickShip(userTable);
     allowedGridCells();
-
-
 }
 
 function letter(number) {
@@ -83,49 +88,112 @@ function number(letter) {
     }
 }
 
-function placeShips(table) {
+function resetCells() {
+    mainData.adjacentCells = [];
+    mainData.topCells = [];
+    mainData.bottomCells = [];
+    mainData.rightCells = [];
+    mainData.leftCells = [];
+}
+
+function findAdjacentCells(e) {
+    resetCells();
+    var gameId = e.target.id.toString();
+    var rowHeader = gameId.charAt(1);
+    var columnHeader = gameId.charAt(2);
+    var adjacentRows = number(rowHeader);
+    var shipLocation = rowHeader + columnHeader;
+
+    mainData.shipLocation.push(shipLocation);
+    var adjacentColumns = parseInt(columnHeader);
+    for (var i = 1; i < mainData.shipSize; i++) {
+        if ((adjacentColumns + i) < 11) {
+            var cell = rowHeader + (adjacentColumns + i);
+            mainData.rightCells.push(cell);
+            mainData.adjacentCells.push(cell);
+        }
+        if ((adjacentColumns - i) > 0) {
+            var cell = rowHeader + (adjacentColumns - i);
+            mainData.leftCells.push(cell);
+            mainData.adjacentCells.push(cell);
+        }
+        if ((adjacentRows + i) < 11) {
+            var row = letter(adjacentRows + i);
+            var cell = row + adjacentColumns;
+            mainData.bottomCells.push(cell);
+            mainData.adjacentCells.push(cell);
+        }
+        if ((adjacentRows - i) > 0) {
+            var row = letter(adjacentRows - i);
+            var cell = row + adjacentColumns;
+            mainData.topCells.push(cell);
+            mainData.adjacentCells.push(cell);
+        }
+    }
+
+
+    console.log("top");
+    console.log(mainData.topCells);
+    console.log("bottom");
+    console.log(mainData.bottomCells);
+    console.log("left");
+    console.log(mainData.leftCells);
+    console.log("right");
+    console.log(mainData.rightCells);
+    console.log("All")
+    console.log(mainData.adjacentCells);
+    e.target.classList.add('clicked');
+}
+
+function setShipOrientation(event2) {
+    if ($.inArray(event2, mainData.topCells) > -1) {
+        mainData.locationsArray.push(mainData.topCells)
+    } else if ($.inArray(event2, mainData.bottomCells) > -1) {
+        mainData.locationsArray.push(mainData.bottomCells)
+    } else if ($.inArray(event2, mainData.leftCells) > -1) {
+        mainData.locationsArray.push(mainData.leftCells)
+    } else if ($.inArray(event2, mainData.rightCells) > -1) {
+        mainData.locationsArray.push(mainData.rightCells)
+    } else {
+        alert('illegal action')
+
+    }
+}
+
+function clickShip(table) {
     table.addEventListener('click', (e) => {
         if (e.target.nodeName.toUpperCase() === 'TD') {
-            if (mainData.placingShip == true) {
-                mainData.adjacentCells = [];
-                mainData.verticalCells = [];
-                mainData.horizontalCells = [];
+            if (mainData.shipPlacementSteps == 1) {
+                findAdjacentCells(e);
+                mainData.shipPlacementSteps = 2;
+            } else if (mainData.shipPlacementSteps == 2) {
                 var gameId = e.target.id.toString();
                 var rowHeader = gameId.charAt(1);
                 var columnHeader = gameId.charAt(2);
                 var adjacentRows = number(rowHeader);
-                var shipLocation = rowHeader + columnHeader;
-                mainData.shipLocation.push(shipLocation);
-                var adjacentColumns = parseInt(columnHeader);
-                for (var i = 1; i < 5; i++) {
-                    if ((adjacentColumns + i) < 11) {
-                        var cell = rowHeader + (adjacentColumns + i);
-                        mainData.adjacentCells.push(cell)
-                    }
-                    if ((adjacentColumns - i) > 0) {
-                        var cell = rowHeader + (adjacentColumns - i);
-                        mainData.adjacentCells.push(cell);
-                    }
-                    if ((adjacentRows + i) < 11) {
-                        var row = letter(adjacentRows + i);
-                        var cell = row + adjacentColumns;
-                        mainData.adjacentCells.push(cell);
-                    }
-                    if ((adjacentRows - i) > 0) {
-                        var row = letter(adjacentRows - i);
-                        var cell = row + adjacentColumns;
-                        mainData.adjacentCells.push(cell);
-                    }
-                }
-                console.log(mainData.adjacentCells)
-                e.target.classList.add('clicked');
-            }
+                var secondClickLocation = rowHeader + columnHeader;
+                setShipOrientation(secondClickLocation);
+                console.log(mainData.locationsArray);
+                
+                let res = mainData.locationsArray.filter(v => v.filter(c => {
+                    return mainData.possibleCells.indexOf(c) == -1;
+                }));
 
+                console.log(JSON.stringify(res));
+//                allowedCellPlacement();
+                e.target.classList.add('clicked');
+                mainData.shipPlacementSteps = 3;
+
+            }
         }
     });
 }
 
-
+function allowedCellPlacement() {
+    for (var i = 0; i < mainData.locationsArray; i++) {
+        console.log(mainData.locationsArray[i])
+    }
+}
 
 function generateUserGrid(tableId, columnHeaders, rowHeaders) {
     let rows = rowHeaders.length;
@@ -213,30 +281,62 @@ function displayPlayers(player1, player2) {
     document.getElementById("player2").innerHTML = player2;
 }
 
-function setShip(ship) {
-    mainData.placingShip = true;
-    mainData.shipType = ship;
-    fetch("/api/games/players/" + mainData.gamePlayerId + "/ships", {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify([{
-                type: ship,
-                location: mainData.shipLocation
+function sumbitShip() {
+    if (mainData.shipPlacementSteps == 3) {
+        fetch("/api/games/players/" + mainData.gamePlayerId + "/ships", {
+                credentials: 'include',
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify([{
+                    type: mainData.shipType,
+                    location: mainData.shipLocation
             }]),
-        })
-        .then(r => {
+            })
+            .then(r => {
+                if (r.status == 403) {
+                    swal("Denied", "All ships have been placed");
+                    mainData.shipPlacementSteps = 0;
+                } else {
+                    r.json().then(location.reload());
+                }
+            })
 
-            if (r.status == 403) {
-                swal("Denied", "All ships have been placed");
-            } else {
-                r.json().then(location.reload());
-            }
-        })
+
+            .catch(e => console.log(e))
+    }
 
 
-        .catch(e => console.log(e))
 }
+
+function setShip(ship, size) {
+    mainData.shipPlacementSteps = 1;
+    mainData.shipType = ship;
+    mainData.shipSize = size;
+    if ($.inArray(ship, mainData.placedShips) == -1) {
+        mainData.placedShips.push(ship);
+    } else {
+        alert('duplicate');
+    }
+
+}
+
+let playerMoves = [0, 1, 4];
+let winningCombinations = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8],
+  [0, 3, 6],
+  [1, 4, 7],
+  [2, 5, 8],
+  [0, 4, 8],
+  [2, 4, 6],
+];
+
+let res = winningCombinations.filter(v => v.filter(c => {
+    return playerMoves.indexOf(c) > -1;
+}).length == 2);
+
+console.log(JSON.stringify(res));

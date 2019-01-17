@@ -57,6 +57,14 @@ ul {
     
 }
 
+ul li button#ship-submission {
+    background: red;
+}
+
+.clicked{
+    background: green;
+}
+
 .center-title {
     display: flex;
     align-items: center;

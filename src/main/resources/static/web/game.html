@@ -26,13 +26,15 @@
             <div class="ship-selection">
                 <ul>
                     
-                    <li><button onclick="setShip('Aircraft Carrier')">Aircraft Carrier</button></li>
-                    <li><button onclick="setShip('Battleship')">Battleship</button></li>
-                    <li><button onclick="setShip('Submarine')">Submarine</button></li>
-                    <li><button onclick="setShip('Destroyer')">Destroyer</button></li>
-                    <li><button onclick="setShip('Patrol Boat')">Patrol Boat</button></li>
-                    
+                    <li><button onclick="setShip('Aircraft Carrier',5)">Aircraft Carrier</button></li>
+                    <li><button onclick="setShip('Battleship',4)">Battleship</button></li>
+                    <li><button onclick="setShip('Submarine',3)">Submarine</button></li>
+                    <li><button onclick="setShip('Destroyer',3)">Destroyer</button></li>
+                    <li><button onclick="setShip('Patrol Boat',2)">Patrol Boat</button></li>
+                    <li><button id='ship-submission' onclick='sumbitShip()'>Submit Ship</button></li>
                 </ul>
+                
+                
             </div>
             <div>
                 <div class="center-title">
