@@ -132,31 +132,46 @@ function findAdjacentCells(e) {
     }
 
 
-    console.log("top");
-    console.log(mainData.topCells);
-    console.log("bottom");
-    console.log(mainData.bottomCells);
-    console.log("left");
-    console.log(mainData.leftCells);
-    console.log("right");
-    console.log(mainData.rightCells);
-    console.log("All")
-    console.log(mainData.adjacentCells);
+//    console.log("top");
+//    console.log(mainData.topCells);
+//    console.log("bottom");
+//    console.log(mainData.bottomCells);
+//    console.log("left");
+//    console.log(mainData.leftCells);
+//    console.log("right");
+//    console.log(mainData.rightCells);
+//    console.log("All")
+//    console.log(mainData.adjacentCells);
     e.target.classList.add('clicked');
 }
 
-function setShipOrientation(event2) {
-    if ($.inArray(event2, mainData.topCells) > -1) {
-        mainData.locationsArray.push(mainData.topCells)
-    } else if ($.inArray(event2, mainData.bottomCells) > -1) {
-        mainData.locationsArray.push(mainData.bottomCells)
-    } else if ($.inArray(event2, mainData.leftCells) > -1) {
-        mainData.locationsArray.push(mainData.leftCells)
-    } else if ($.inArray(event2, mainData.rightCells) > -1) {
-        mainData.locationsArray.push(mainData.rightCells)
+function fillOccupiedCells(array){
+    for (var i = 0; i < array.length; i++){
+        console.log(array[i])
+        document.getElementById("U"+array[i]).classList.add("clicked")
+    }
+}
+
+function setShipOrientation(idOfSecondClick) {
+    if ($.inArray(idOfSecondClick, mainData.topCells) > -1) {
+        if(mainData.topCells.length == (mainData.shipSize-1)){
+            mainData.locationsArray.push(mainData.topCells)         
+        }
+        
+    } else if ($.inArray(idOfSecondClick, mainData.bottomCells) > -1) {
+        if(mainData.bottomCells.length == (mainData.shipSize-1)){
+            mainData.locationsArray.push(mainData.bottomCells)           
+        }
+    } else if ($.inArray(idOfSecondClick, mainData.leftCells) > -1) {
+        if(mainData.leftCells.length == (mainData.shipSize-1)){
+            mainData.locationsArray.push(mainData.leftCells)           
+        }
+    } else if ($.inArray(idOfSecondClick, mainData.rightCells) > -1) {
+        if(mainData.rightCells.length == (mainData.shipSize-1)){
+            mainData.locationsArray.push(mainData.rightCells)           
+        }
     } else {
         alert('illegal action')
-
     }
 }
 
@@ -167,33 +182,33 @@ function clickShip(table) {
                 findAdjacentCells(e);
                 mainData.shipPlacementSteps = 2;
             } else if (mainData.shipPlacementSteps == 2) {
+                
                 var gameId = e.target.id.toString();
                 var rowHeader = gameId.charAt(1);
                 var columnHeader = gameId.charAt(2);
                 var adjacentRows = number(rowHeader);
                 var secondClickLocation = rowHeader + columnHeader;
+                mainData.locationsArray = [];
                 setShipOrientation(secondClickLocation);
-                console.log(mainData.locationsArray);
-                
-                let res = mainData.locationsArray.filter(v => v.filter(c => {
-                    return mainData.possibleCells.indexOf(c) == -1;
-                }));
-
-                console.log(JSON.stringify(res));
-//                allowedCellPlacement();
-                e.target.classList.add('clicked');
+            
+//                mainData.locationsArray.forEach(function (cell){
+//                    $("#U"+cell).classList.add("clicked");
+//                });
+                console.log(mainData.locationsArray)
+                for (var i = 0; i < mainData.locationsArray[0].length; i++){
+                    var tableId = "#U";
+//                    var cell = '#U'+ mainData.locationsArray[i];
+                    console.log(tableId + mainData.locationsArray[0][i]);
+                    $(tableId+mainData.locationsArray[0][i]).addClass("clicked");
+                }
+               
                 mainData.shipPlacementSteps = 3;
-
-            }
+ 
         }
-    });
+    }});
 }
 
-function allowedCellPlacement() {
-    for (var i = 0; i < mainData.locationsArray; i++) {
-        console.log(mainData.locationsArray[i])
-    }
-}
+
 
 function generateUserGrid(tableId, columnHeaders, rowHeaders) {
     let rows = rowHeaders.length;
@@ -322,21 +337,3 @@ function setShip(ship, size) {
     }
 
 }
-
-let playerMoves = [0, 1, 4];
-let winningCombinations = [
-  [0, 1, 2],
-  [3, 4, 5],
-  [6, 7, 8],
-  [0, 3, 6],
-  [1, 4, 7],
-  [2, 5, 8],
-  [0, 4, 8],
-  [2, 4, 6],
-];
-
-let res = winningCombinations.filter(v => v.filter(c => {
-    return playerMoves.indexOf(c) > -1;
-}).length == 2);
-
-console.log(JSON.stringify(res));
