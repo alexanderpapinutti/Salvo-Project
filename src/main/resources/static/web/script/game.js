@@ -107,16 +107,22 @@ function findAdjacentCells(e) {
     resetCells();
     var firstCellId = e.target.id.toString();
     mainData.firstClickId = firstCellId;
-    var rowHeader = firstCellId.charAt(1);
+    var rowHeader = firstCellId.charAt(1);   
     var columnHeader = firstCellId.charAt(2);
+    var newColumnHeader;
+    if (firstCellId.charAt(3) != null){
+        newColumnHeader = columnHeader + firstCellId.charAt(3);
+    }else{
+        newColumnHeader = columnHeader;
+    }
     var adjacentRows = number(rowHeader);
-    var shipLocation = rowHeader + columnHeader;
+    var shipLocation = rowHeader + newColumnHeader;
     mainData.adjacentCells.push(shipLocation);
     mainData.rightCells.push(shipLocation);
     mainData.leftCells.push(shipLocation);
     mainData.bottomCells.push(shipLocation);
     mainData.topCells.push(shipLocation);
-    var adjacentColumns = parseInt(columnHeader);
+    var adjacentColumns = parseInt(newColumnHeader);
     for (var i = 1; i < mainData.shipSize; i++) {
         if ((adjacentColumns + i) < 11) {
             var cell = rowHeader + (adjacentColumns + i);
@@ -144,7 +150,6 @@ function findAdjacentCells(e) {
             mainData.adjacentCells.push(cell);
         }
     }
-    console.log(mainData.adjacentCells)
     e.target.classList.add('clicked');
 }
 
@@ -194,26 +199,38 @@ function clickShip(table) {
                 findAdjacentCells(e);
                 mainData.shipPlacementSteps = 2;
             } else if (mainData.shipPlacementSteps == 2) {
-
                 var firstCellId = e.target.id.toString();
                 var rowHeader = firstCellId.charAt(1);
                 var columnHeader = firstCellId.charAt(2);
+                var newColumnHeader;
+                if (firstCellId.charAt(3) != null){
+                    newColumnHeader = columnHeader + firstCellId.charAt(3);
+                }else{
+                    newColumnHeader = columnHeader;
+                }
                 var adjacentRows = number(rowHeader);
-                var secondClickLocation = rowHeader + columnHeader;
+                var secondClickLocation = rowHeader + newColumnHeader;
                 setShipOrientation(secondClickLocation);
-                console.log(mainData.locationsArray)
                 for (var i = 0; i < mainData.locationsArray.length; i++) {
                     for (var j = 0; j < mainData.locationsArray[i].length; j++) {
                         $("#U" + mainData.locationsArray[i][j]).addClass("clicked");
                     }
 
                 }
-                if (mainData.placedShips.length == 5) {
+                if(mainData.placedShips.length == 5) {
                     mainData.shipPlacementSteps = 3;
+                    $("#ship-submission").css("background","green")
                 } else {
                     mainData.shipPlacementSteps = 0;
+                
                 }
-
+                console.log(mainData.placedShips)
+                for (var k = 0; k < mainData.placedShips.length; k++){
+                    console.log(mainData.placedShips[k])
+                    $("#"+mainData.placedShips[k]).hide();
+                }
+                
+                
 
             }
         }
@@ -247,14 +264,17 @@ function generateUserGrid(tableId, columnHeaders, rowHeaders) {
 }
 
 function printSalvos(tableID, arrayOfSalvos, classID) {
-    for (var i = 0; i < arrayOfSalvos.length; i++) {
-        let salvos = arrayOfSalvos[i].locations;
-        for (var j = 0; j < salvos.length; j++) {
-            let idLocation = salvos[j];
-            $(tableID + idLocation).removeClass('emptyCells').addClass(classID);
-            $(tableID + idLocation).html(arrayOfSalvos[i].turn);
+    if (arrayOfSalvos != null) {
+        for (var i = 0; i < arrayOfSalvos.length; i++) {
+            let salvos = arrayOfSalvos[i].locations;
+            for (var j = 0; j < salvos.length; j++) {
+                let idLocation = salvos[j];
+                $(tableID + idLocation).removeClass('emptyCells').addClass(classID);
+                $(tableID + idLocation).html(arrayOfSalvos[i].turn);
+            }
         }
     }
+
 }
 
 function printShips(arrayOfShips) {
@@ -285,9 +305,17 @@ function getData() {
         printSalvos('#S', mainData.userSalvos, 'salvo-location');
         printSalvos('#U', mainData.enemySalvos, 'enemy-guess');
         mainData.player1 = data.userInfo.userName;
-        mainData.player2 = data.enemyInfo.userName;
+        if (data.enemyInfo != null) {
+            mainData.player2 = data.enemyInfo.userName;
+            document.getElementById("player1").innerHTML = mainData.player1;
+            document.getElementById("player1-1").innerHTML = mainData.player1;
+            document.getElementById("player2").innerHTML = mainData.player2;
+        } else {
+            document.getElementById("player1").innerHTML = mainData.player1;
+            document.getElementById("player1-1").innerHTML = mainData.player1;
+            document.getElementById("player2").innerHTML = "Waiting for Opponnent...";
+        }
         setGamePlayerId(data);
-        displayPlayers(mainData.player1, mainData.player2);
     })
 }
 
@@ -300,13 +328,20 @@ function setGamePlayerId(data) {
 
 }
 
-function displayPlayers(player1, player2) {
-    document.getElementById("player1").innerHTML = player1;
-    document.getElementById("player2").innerHTML = player2;
+function deleteShips(){
+    var removeLocations = mainData.locationsArray.pop();
+    var removeShip = mainData.placedShips.pop();
+    $("#"+removeShip).show()
+    for (var i = 0; i < removeLocations.length; i++){
+        document.getElementById("U"+removeLocations[i]).classList.remove("clicked");
+        mainData.occupiedCells.pop();
+    }
+    $("#ship-submission").css("background","black")
 }
 
-function sumbitShip() {
+function sumbitShips() {
     if (mainData.shipPlacementSteps == 3) {
+        
         for (var i = 0; i < mainData.placedShips.length; i++) {
             fetch("/api/games/players/" + mainData.gamePlayerId + "/ships", {
                     credentials: 'include',
@@ -338,12 +373,28 @@ function sumbitShip() {
 
 }
 
-function setShip(ship, size) {
+function setShip(ship) {
     mainData.shipPlacementSteps = 1;
     mainData.shipType = ship;
-    mainData.shipSize = size;
+    setShipSize(ship);
     if ($.inArray(mainData.shipType, mainData.placedShips) > -1) {
         alert('duplicate');
         mainData.shipPlacementSteps = 0;
+    }
+}
+
+function setShipSize(ship) {
+    if (ship == 'Aircraft-Carrier') {
+        mainData.shipSize = 5;
+    } else if (ship == 'Battleship') {
+        mainData.shipSize = 4;
+    } else if (ship == 'Submarine') {
+        mainData.shipSize = 3;
+    } else if (ship == 'Destroyer') {
+        mainData.shipSize = 3;
+    } else if (ship == 'Patrol-Boat') {
+        mainData.shipSize = 2;
+    } else {
+
     }
 }

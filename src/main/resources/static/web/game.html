@@ -6,36 +6,26 @@
     <title>Ship Locations!</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="style/style.css">
-     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 </head>
 
 <body>
     <div class="container">
-        <div class="top-side">
-            <div>
-                <button class="btn"><a href="games.html">Return To Main Page</a></button>
-            </div>
-        </div>
-
         <div class="title">
+            <div>
+                
+                <p id="player1"></p>
+            </div>
             <div>
                 <h1>BATTLE!</h1>
             </div>
+            <div class="return-home">
+                <div>
+                    <button class="btn"><a href="games.html">Return To Main Page</a></button>
+                </div>
+            </div>
         </div>
         <div class="tables-div">
-            <div class="ship-selection">
-                <ul>
-                    
-                    <li><button onclick="setShip('Aircraft Carrier',5)">Aircraft Carrier</button></li>
-                    <li><button onclick="setShip('Battleship',4)">Battleship</button></li>
-                    <li><button onclick="setShip('Submarine',3)">Submarine</button></li>
-                    <li><button onclick="setShip('Destroyer',3)">Destroyer</button></li>
-                    <li><button onclick="setShip('Patrol Boat',2)">Patrol Boat</button></li>
-                    <li><button id='ship-submission' onclick='sumbitShip()'>Submit Ship</button></li>
-                </ul>
-                
-                
-            </div>
             <div>
                 <div class="center-title">
 
@@ -43,7 +33,7 @@
                         <h3> MotherBoard </h3>
                     </div>
                     <div>
-                        <p id="player1"></p>
+                        <p id="player1-1"></p>
                     </div>
                 </div>
                 <div id="tableContainer"></div>
@@ -59,6 +49,29 @@
                 </div>
                 <div id="tableContainerSalvos"></div>
             </div>
+        </div>
+        <div class="ship-selection">       
+                <div class= "aircraft-button">
+                    <button id="Aircraft-Carrier" onclick="setShip('Aircraft-Carrier')">Aircraft Carrier</button>
+                </div>
+                <div class= "battleship-button">
+                    
+                    <button id="Battleship" onclick="setShip('Battleship')">Battleship</button>
+                </div>
+                <div class= "submarine-button">
+                    <button id="Submarine" onclick="setShip('Submarine')">Submarine</button>
+                </div>
+                <div class= "destroyer-button">
+                    <button id="Destroyer" onclick="setShip('Destroyer')">Destroyer</button>
+                </div>
+                <div class= "patrol-button">
+                    <button id="Patrol-Boat"onclick="setShip('Patrol-Boat')">Patrol Boat</button>
+                </div>
+                <div class= "submit-cancel-button">
+                    <div><button id='ship-submission' onclick='sumbitShips()'>Submit Ships</button></div>
+                    <div><button id='ship-deletion' onclick='deleteShips()'>Cancel</button></div>
+                    
+                </div>
         </div>
     </div>
 </body>

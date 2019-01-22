@@ -1,8 +1,5 @@
 .emptyCells {
     border: 3px solid black;
-    
-    width: 40px;
-    height: 40px;
     background: rgba(255, 255, 255, 0.5);
 }
 
@@ -11,57 +8,83 @@
 }
 
 body {
-    background-image: url('image/game-page-background.png');
-    background-size: cover;                      
-    background-repeat:   no-repeat;
-    height: 100%;
-    background-position: center center;
+    background: url('image/game-page-background.png') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
+.submit-cancel-button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 60px;
+}
+
+#ship-submission {
+    width: 120px;
+    background: black;
+    color: white;
+}
+
+#ship-submission:hover {
+    background: red;
+}
+
+#ship-deletion{
+    width: 120px;
+    background: black;
+    color: white;
+}
+
+#ship-deletion:hover{
+    background: red;
+    
+}
 
 .ship-selection {
-    height: 300px;
-    width: 250px;
-    background: rgb(0,0,0,0.5);
-    border: dashed white 5px;
+    height: 80px;
+    width: 100%;
+    background: rgb(0, 0, 0, 0.5);
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
 }
 
-ul li button{
+.aircraft-button button{
     background: black;
-    font-size: 12px;
-    border: solid 2px white;
     color: white;
-    margin-top: 10px;
-    margin-right: 5px;
 }
 
-ul li button:hover{
-    background: coral;
+.battleship-button button{
+    background: black;
+    color: white;
+}
+.submarine-button button{
+    background: black;
+    color: white;
+}
+.destroyer-button button{
+    background: black;
+    color: white;
+}
+.patrol-button button{
+    background: black;
+    color: white;
 }
 
-ul {
-    list-style-type: none;
-}
 
-.ship-list {
-    
-}
 
 .tables-div {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    
+    height: 75vh;
+
 }
 
-ul li button#ship-submission {
-    background: red;
-}
-
-.clicked{
+.clicked {
     background: green;
 }
 
@@ -69,6 +92,7 @@ ul li button#ship-submission {
     display: flex;
     align-items: center;
     flex-direction: column;
+    
 }
 
 #player1 {
@@ -78,6 +102,12 @@ ul li button#ship-submission {
     font-size: 20px;
 }
 
+#player1-1{
+    color: black;
+    text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+    font-family: fantasy;
+    font-size: 20px;
+}
 #player2 {
     color: black;
     text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
@@ -99,8 +129,7 @@ h3 {
 
 .myRowHeaders {
     background: none;
-    width: 40px;
-    height: 40px;
+    height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -112,7 +141,12 @@ h3 {
 
 .title {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    width: 100%;
+
+    align-items: center;
+    margin-top: -10px;
+    border-bottom: solid black 3px;
 }
 
 .center {
@@ -134,11 +168,15 @@ h3 {
 .myColumnHeaders {
     background: none;
     color: black;
-    width: 40px;
-    height: 40px;
+    width: 30px;
+    
     font-family: fantasy;
     font-size: 30px;
     text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
+}
+
+.ship-button{
+    width: (1/6)%;
 }
 
 .top-side {
@@ -204,6 +242,3 @@ h1 {
     background-color: #2a72b9;
     border: solid;
 }
-
-
-
