@@ -15,6 +15,15 @@ input[type=text], input[type=password] {
     
 }
 
+#join_game {
+    border: black solid 2px;
+    background: #2a72b9;
+}
+
+#join_game:hover{
+    background: coral;
+}
+
 #create_game {
     width: 200px;
 }
@@ -22,6 +31,7 @@ input[type=text], input[type=password] {
 #return-game-button {
     border: black solid 2px;
     background: #2a72b9;
+    
     
 }
 

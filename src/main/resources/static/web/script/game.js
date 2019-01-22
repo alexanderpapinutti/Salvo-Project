@@ -10,7 +10,6 @@ const mainData = {
     userTable: '',
     shipLocation: [],
     shipType: '',
-    possibleCells: [],
     adjacentCells: [],
     shipPlacementSteps: 0,
     shipsArray: [],
@@ -23,6 +22,7 @@ const mainData = {
     shipSize: '',
     placedShips: [],
     occupiedCells: [],
+    userGuesses: [],
 }
 
 loadGamePlayerData();
@@ -34,7 +34,7 @@ function loadGamePlayerData() {
     var userTable = document.getElementById("U");
     var salvoTable = document.getElementById("S");
     clickShip(userTable);
-    allowedGridCells();
+    clickSalvoCell(salvoTable);
 }
 
 function letter(number) {
@@ -106,13 +106,12 @@ function resetCells() {
 function findAdjacentCells(e) {
     resetCells();
     var firstCellId = e.target.id.toString();
-    mainData.firstClickId = firstCellId;
-    var rowHeader = firstCellId.charAt(1);   
+    var rowHeader = firstCellId.charAt(1);
     var columnHeader = firstCellId.charAt(2);
     var newColumnHeader;
-    if (firstCellId.charAt(3) != null){
+    if (firstCellId.charAt(3) != null) {
         newColumnHeader = columnHeader + firstCellId.charAt(3);
-    }else{
+    } else {
         newColumnHeader = columnHeader;
     }
     var adjacentRows = number(rowHeader);
@@ -163,8 +162,8 @@ function setShipOrientation(idOfSecondClick) {
     } else if ($.inArray(idOfSecondClick, mainData.rightCells) > -1) {
         validateDirection(mainData.rightCells)
     } else {
-        alert('cannot place ship diagonally');
-        document.getElementById(mainData.firstClickId).classList.remove("clicked");
+        swal('cannot place ship diagonally');
+        document.getElementById("U" + mainData.firstClickId).classList.remove("clicked");
     }
 }
 
@@ -177,8 +176,8 @@ function validateDirection(array) {
             }
             mainData.placedShips.push(mainData.shipType);
         } else if (commonElements(mainData.occupiedCells, array) == true) {
-            alert("cannot place ships on top of other ships");
-            document.getElementById(mainData.firstClickId).classList.remove("clicked");
+            swal("cannot place ships on top of other ships");
+            document.getElementById("U" + mainData.firstClickId).classList.remove("clicked");
         } else {
             mainData.placedShips.push(mainData.shipType);
             mainData.locationsArray.push(array);
@@ -187,54 +186,92 @@ function validateDirection(array) {
             }
         }
     } else {
-        alert("cannot place ship outside of grid");
-        document.getElementById(mainData.firstClickId).classList.remove("clicked");
+        swal("cannot place ship outside of grid");
+        document.getElementById("U" + mainData.firstClickId).classList.remove("clicked");
+    }
+}
+
+function setClickId(e) {
+    var firstCellId = e.target.id.toString();
+    var rowHeader = firstCellId.charAt(1);
+    var columnHeader = firstCellId.charAt(2);
+    var newColumnHeader;
+    if (firstCellId.charAt(3) != null) {
+        newColumnHeader = columnHeader + firstCellId.charAt(3);
+    } else {
+        newColumnHeader = columnHeader;
+    }
+    var adjacentRows = number(rowHeader);
+    var clickId = rowHeader + newColumnHeader;
+    return clickId;
+}
+
+function clickSalvoCell(table) {
+    table.addEventListener('click', (e) => {
+        if (e.target.id != "") {
+            if (mainData.userGuesses.length < 5) {
+                mainData.userGuesses.push(setClickId(e));
+                e.target.classList.add('clicked');
+
+            } else {
+                swal("All salvos have been placed");
+            }
+        }
+
+    });
+}
+
+function fillOccupiedCells() {
+    for (var i = 0; i < mainData.locationsArray.length; i++) {
+        for (var j = 0; j < mainData.locationsArray[i].length; j++) {
+            $("#U" + mainData.locationsArray[i][j]).addClass("clicked");
+        }
+
+    }
+}
+
+function hideUsedShips() {
+    for (var k = 0; k < mainData.placedShips.length; k++) {
+        $("#" + mainData.placedShips[k]).hide();
     }
 }
 
 function clickShip(table) {
     table.addEventListener('click', (e) => {
-        if (e.target.nodeName.toUpperCase() === 'TD') {
+        if (e.target.id !== "") {
             if (mainData.shipPlacementSteps == 1) {
+                mainData.firstClickId = setClickId(e);
                 findAdjacentCells(e);
                 mainData.shipPlacementSteps = 2;
             } else if (mainData.shipPlacementSteps == 2) {
-                var firstCellId = e.target.id.toString();
-                var rowHeader = firstCellId.charAt(1);
-                var columnHeader = firstCellId.charAt(2);
-                var newColumnHeader;
-                if (firstCellId.charAt(3) != null){
-                    newColumnHeader = columnHeader + firstCellId.charAt(3);
-                }else{
-                    newColumnHeader = columnHeader;
-                }
-                var adjacentRows = number(rowHeader);
-                var secondClickLocation = rowHeader + newColumnHeader;
-                setShipOrientation(secondClickLocation);
-                for (var i = 0; i < mainData.locationsArray.length; i++) {
-                    for (var j = 0; j < mainData.locationsArray[i].length; j++) {
-                        $("#U" + mainData.locationsArray[i][j]).addClass("clicked");
-                    }
-
-                }
-                if(mainData.placedShips.length == 5) {
+                setShipOrientation(setClickId(e));
+                fillOccupiedCells();
+                hideUsedShips();
+                if (mainData.placedShips.length == 5) {
                     mainData.shipPlacementSteps = 3;
-                    $("#ship-submission").css("background","green")
+                    $("#ship-submission").css("background", "green")
                 } else {
                     mainData.shipPlacementSteps = 0;
-                
                 }
-                console.log(mainData.placedShips)
-                for (var k = 0; k < mainData.placedShips.length; k++){
-                    console.log(mainData.placedShips[k])
-                    $("#"+mainData.placedShips[k]).hide();
-                }
-                
-                
 
             }
         }
     });
+}
+
+function setClickId(e) {
+    var firstCellId = e.target.id.toString();
+    var rowHeader = firstCellId.charAt(1);
+    var columnHeader = firstCellId.charAt(2);
+    var newColumnHeader;
+    if (firstCellId.charAt(3) != null) {
+        newColumnHeader = columnHeader + firstCellId.charAt(3);
+    } else {
+        newColumnHeader = columnHeader;
+    }
+    var adjacentRows = number(rowHeader);
+    var clickId = rowHeader + newColumnHeader;
+    return clickId;
 }
 
 function generateUserGrid(tableId, columnHeaders, rowHeaders) {
@@ -288,14 +325,6 @@ function printShips(arrayOfShips) {
     }
 }
 
-function allowedGridCells() {
-    for (var i = 0; i < mainData.rowHeaders.length; i++) {
-        for (var j = 1; j < mainData.columnHeaders.length; j++) {
-            mainData.possibleCells.push(mainData.rowHeaders[i] + mainData.columnHeaders[j])
-        }
-    }
-}
-
 function getData() {
     $.getJSON("/api/game_view/" + location.search.split("=")[1], function (data) {
         mainData.userShips = data.userShips;
@@ -328,20 +357,20 @@ function setGamePlayerId(data) {
 
 }
 
-function deleteShips(){
+function deleteShips() {
     var removeLocations = mainData.locationsArray.pop();
     var removeShip = mainData.placedShips.pop();
-    $("#"+removeShip).show()
-    for (var i = 0; i < removeLocations.length; i++){
-        document.getElementById("U"+removeLocations[i]).classList.remove("clicked");
+    $("#" + removeShip).show()
+    for (var i = 0; i < removeLocations.length; i++) {
+        document.getElementById("U" + removeLocations[i]).classList.remove("clicked");
         mainData.occupiedCells.pop();
     }
-    $("#ship-submission").css("background","black")
+    $("#ship-submission").css("background", "black")
 }
 
 function sumbitShips() {
     if (mainData.shipPlacementSteps == 3) {
-        
+
         for (var i = 0; i < mainData.placedShips.length; i++) {
             fetch("/api/games/players/" + mainData.gamePlayerId + "/ships", {
                     credentials: 'include',
@@ -360,11 +389,10 @@ function sumbitShips() {
                         swal("Denied", "All ships have been placed");
                         mainData.shipPlacementSteps = 0;
                     } else {
+                        
                         r.json().then(location.reload());
                     }
                 })
-
-
                 .catch(e => console.log(e))
         }
 

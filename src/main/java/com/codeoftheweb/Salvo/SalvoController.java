@@ -53,7 +53,29 @@ public class SalvoController {
             gamePlayerRepository.save(gamePlayer);
             return new ResponseEntity<>(makeMap("newGamePlayerId", gamePlayer.getId()), HttpStatus.CREATED);
         }else{
-            return new ResponseEntity<>(makeMap("error", "Can't create game"), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(makeMap("error", "Login to create game"), HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @RequestMapping(path = "/games/players/{gamePlayerId}/salvoes", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> placeSalvos(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication){
+        GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
+        if(authentication == null){
+            return new ResponseEntity<>(makeMap("error", "No user is logged in")
+                    , HttpStatus.UNAUTHORIZED);
+        }else if(gamePlayer == null){
+            return new ResponseEntity<>(makeMap("error", "This user does not exist")
+                    , HttpStatus.UNAUTHORIZED);
+        }else if(gamePlayer.getPlayer() != currentPlayer(authentication)) {
+            return new ResponseEntity<>(makeMap("error", "This is not your game")
+                    , HttpStatus.UNAUTHORIZED);
+        }else if(salvo.getLocations().size() == 5) {
+            return new ResponseEntity<>(makeMap("error", "Shots limit reached")
+                    , HttpStatus.FORBIDDEN);
+        }else {
+            Salvo newSalvo = new Salvo(1, gamePlayer, salvo.getLocations());
+            salvoRepository.save(newSalvo);
+            return new ResponseEntity<>(makeMap("salvo", makeSalvoDTO(newSalvo)), HttpStatus.CREATED);
         }
     }
 
@@ -80,7 +102,7 @@ public class SalvoController {
                 ship.setGamePlayer(gamePlayer);
                 shipRepository.save(ship);
             }
-            return new ResponseEntity<>(makeMap("success", "Ship was added")
+            return new ResponseEntity<>(makeMap("success", "Ships successfully added")
                     , HttpStatus.CREATED);
         }
     }

@@ -43,7 +43,7 @@ body {
     
 }
 
-.ship-selection {
+#ship-selection {
     height: 80px;
     width: 100%;
     background: rgb(0, 0, 0, 0.5);
