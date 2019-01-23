@@ -26,6 +26,33 @@ const mainData = {
     userGuesses: [],
 }
 
+function activateModal() {
+    var modal = document.getElementById('myModal');
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("myBtn");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+
+    // When the user clicks the button, open the modal 
+    btn.onclick = function () {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function (event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+}
+
 function letter(number) {
     if (number == 1) {
         return number = 'A';
@@ -94,8 +121,8 @@ function resetCells() {
 }
 
 function setPossibleCells(array) {
-    if (array.length == mainData.shipSize){
-        for(var i=0; i < array.length; i++){
+    if (array.length == mainData.shipSize) {
+        for (var i = 0; i < array.length; i++) {
             mainData.possibleCells.push(array[i]);
         }
     }
@@ -151,7 +178,7 @@ function findAdjacentCells(e) {
     setPossibleCells(mainData.bottomCells);
     setPossibleCells(mainData.leftCells);
     setPossibleCells(mainData.rightCells);
-    
+
     e.target.classList.add('clicked');
 }
 
@@ -214,10 +241,19 @@ function clickSalvoCell(table) {
         if (e.target.id != "") {
             $("#ship-selection").hide();
             $("#salvo-submission").show();
-            
+            if (e.target.classList == "salvo-location") {
+                swal("Cannot place guess in same cell more than once")
+            }
             if (mainData.userGuesses.length < 5) {
-                mainData.userGuesses.push(setClickId(e));
-                e.target.classList.add('clicked');
+                if (e.target.classList == "salvo-location") {
+                    swal("Connot place shots on top of shots fired")
+                } else {
+                    mainData.userGuesses.push(setClickId(e));
+                    e.target.classList.remove('emptyCells');
+                    e.target.classList.add('user-guess');
+                }
+
+
             } else {
                 swal("All salvos have been placed");
             }
@@ -226,15 +262,17 @@ function clickSalvoCell(table) {
     });
 }
 
-function removePossibleCells(array, setclass){
+function removePossibleCells(array, setclass) {
     for (var i = 0; i < array.length; i++) {
         $("#U" + array[i]).removeClass(setclass);
+        $("#U" + array[i]).addClass("emptyCells");
     }
 }
 
 function fillPossibleCells(array, setclass) {
     for (var i = 0; i < array.length; i++) {
         $("#U" + array[i]).addClass(setclass);
+        $("#U" + array[i]).removeClass("emptyCells");
     }
 }
 
@@ -326,7 +364,7 @@ function printSalvos(tableID, arrayOfSalvos, classID) {
             for (var j = 0; j < salvos.length; j++) {
                 let idLocation = salvos[j];
                 $(tableID + idLocation).removeClass('emptyCells').addClass(classID);
-                $(tableID + idLocation).html(arrayOfSalvos[i].turn);
+                //                $(tableID + idLocation).html(arrayOfSalvos[i].turn);
             }
         }
     }
@@ -344,29 +382,6 @@ function printShips(arrayOfShips) {
     }
 }
 
-function getData() {
-    $.getJSON("/api/game_view/" + location.search.split("=")[1], function (data) {
-        mainData.userShips = data.userShips;
-        mainData.userSalvos = data.userSalvos;
-        mainData.enemySalvos = data.enemySalvos;
-        printShips(mainData.userShips);
-        printSalvos('#S', mainData.userSalvos, 'salvo-location');
-        printSalvos('#U', mainData.enemySalvos, 'enemy-guess');
-        mainData.player1 = data.userInfo.userName;
-        if (data.enemyInfo != null) {
-            mainData.player2 = data.enemyInfo.userName;
-            document.getElementById("player1").innerHTML = mainData.player1;
-            document.getElementById("player1-1").innerHTML = mainData.player1;
-            document.getElementById("player2").innerHTML = mainData.player2;
-        } else {
-            document.getElementById("player1").innerHTML = mainData.player1;
-            document.getElementById("player1-1").innerHTML = mainData.player1;
-            document.getElementById("player2").innerHTML = "Waiting for Opponnent...";
-        }
-        setGamePlayerId(data);
-    })
-}
-
 function setGamePlayerId(data) {
     for (var i = 0; i < data.game.gamePlayers.length; i++) {
         if (data.game.gamePlayers[i].player.userName == data.userInfo.userName) {
@@ -374,6 +389,12 @@ function setGamePlayerId(data) {
         }
     }
 
+}
+
+function deleteSalvos() {
+    var cancelPlacement = mainData.userGuesses.pop();
+    $("#S" + cancelPlacement).removeClass("user-guess");
+    $("#S" + cancelPlacement).addClass("emptyCells");
 }
 
 function deleteShips() {
@@ -408,7 +429,7 @@ function postShips() {
                         mainData.shipPlacementSteps = 0;
                     } else {
 
-//                        r.json().then(location.reload());
+                        //                        r.json().then(location.reload());
                         r.json();
                         mainData.shipPlacementSteps = 4;
                     }
@@ -437,7 +458,7 @@ function postSalvos() {
             } else {
 
                 r.json().then(location.reload());
-                
+
             }
         })
         .catch(e => console.log(e))
@@ -469,6 +490,39 @@ function setShipSize(ship) {
     }
 }
 
+function showElement(elementId) {
+    $("#" + elementId).show();
+}
+
+function hideElement(elementId) {
+    $("#" + elementId).hide();
+}
+
+function gameDetails() {
+    showElement("modal-wrapper");
+}
+
+function getData() {
+    $.getJSON("/api/game_view/" + location.search.split("=")[1], function (data) {
+        mainData.userShips = data.userShips;
+        mainData.userSalvos = data.userSalvos;
+        mainData.enemySalvos = data.enemySalvos;
+        printShips(mainData.userShips);
+        printSalvos('#S', mainData.userSalvos, 'salvo-location');
+        printSalvos('#U', mainData.enemySalvos, 'enemy-guess');
+        mainData.player1 = data.userInfo.userName;
+        if (data.enemyInfo != null) {
+            mainData.player2 = data.enemyInfo.userName;
+            document.getElementById("player1").innerHTML = mainData.player1;
+            document.getElementById("player2").innerHTML = mainData.player2;
+        } else {
+            document.getElementById("player1").innerHTML = mainData.player1;
+            document.getElementById("player2").innerHTML = "Waiting for Opponnent...";
+        }
+        setGamePlayerId(data);
+    })
+}
+
 function loadGamePlayerData() {
     $("#tableContainer").append(generateUserGrid("U", mainData.columnHeaders, mainData.rowHeaders));
     $("#tableContainerSalvos").append(generateUserGrid("S", mainData.columnHeaders, mainData.rowHeaders));
@@ -479,6 +533,8 @@ function loadGamePlayerData() {
     var salvoTable = document.getElementById("S");
     clickShip(userTable);
     clickSalvoCell(salvoTable);
+    activateModal();
+    deleteSalvos();
 }
 
 loadGamePlayerData();

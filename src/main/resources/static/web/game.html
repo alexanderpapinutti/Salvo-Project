@@ -12,19 +12,29 @@
 <body>
     <div class="container">
         <div class="title">
-            <div>
-                
-                <p id="player1"></p>
+            <div class="game-details">
+                <button id="myBtn" type="button" class="btn btn-info">Game Details</button>
             </div>
             <div>
                 <h1>BATTLE!</h1>
             </div>
             <div class="return-home">
                 <div>
-                    <button class="btn"><a href="games.html">Return To Main Page</a></button>
+                    <button type="button" class="btn btn-info"><a href="games.html">Return To Main Page</a></button>
                 </div>
             </div>
         </div>
+        <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h1>Match Events</h1>
+                <p>Game events table will be here</p>
+            </div>
+
+        </div>
+
         <div class="tables-div">
             <div>
                 <div class="center-title">
@@ -33,7 +43,7 @@
                         <h3> MotherBoard </h3>
                     </div>
                     <div>
-                        <p id="player1-1"></p>
+                        <p id="player1"></p>
                     </div>
                 </div>
                 <div id="tableContainer"></div>
@@ -50,31 +60,32 @@
                 <div id="tableContainerSalvos"></div>
             </div>
         </div>
-        <div id="ship-selection">       
-                <div class= "aircraft-button">
-                    <button id="Aircraft-Carrier" onclick="setShip('Aircraft-Carrier')">Aircraft Carrier</button>
-                </div>
-                <div class= "battleship-button">
-                    
-                    <button id="Battleship" onclick="setShip('Battleship')">Battleship</button>
-                </div>
-                <div class= "submarine-button">
-                    <button id="Submarine" onclick="setShip('Submarine')">Submarine</button>
-                </div>
-                <div class= "destroyer-button">
-                    <button id="Destroyer" onclick="setShip('Destroyer')">Destroyer</button>
-                </div>
-                <div class= "patrol-button">
-                    <button id="Patrol-Boat"onclick="setShip('Patrol-Boat')">Patrol Boat</button>
-                </div>
-                <div class= "submit-cancel-button">
-                    <div><button id='ship-submission' onclick='postShips()'>Submit Ships</button></div>
-                    <div><button id='ship-deletion' onclick='deleteShips()'>Cancel</button></div>
-                </div>
+        <div id="ship-selection">
+            <div class="aircraft-button">
+                <button id="Aircraft-Carrier" onclick="setShip('Aircraft-Carrier')">Aircraft Carrier</button>
+            </div>
+            <div class="battleship-button">
+
+                <button id="Battleship" onclick="setShip('Battleship')">Battleship</button>
+            </div>
+            <div class="submarine-button">
+                <button id="Submarine" onclick="setShip('Submarine')">Submarine</button>
+            </div>
+            <div class="destroyer-button">
+                <button id="Destroyer" onclick="setShip('Destroyer')">Destroyer</button>
+            </div>
+            <div class="patrol-button">
+                <button id="Patrol-Boat" onclick="setShip('Patrol-Boat')">Patrol Boat</button>
+            </div>
+            <div class="submit-cancel-button">
+                <div><button id='ship-submission' onclick='postShips()'>Submit Ships</button></div>
+                <div><button id='ship-deletion' onclick='deleteShips()'>Cancel</button></div>
+            </div>
         </div>
         <div id="salvo-submission">
             <div>
                 <button id="submit-salvo-btn" onclick="postSalvos()">Submit</button>
+                <button id="delete-salvo-btn" onclick="deleteSalvos()">Undo</button>
             </div>
         </div>
     </div>

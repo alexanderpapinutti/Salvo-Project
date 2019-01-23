@@ -78,11 +78,12 @@ input[type=text], input[type=password] {
 }
 
 body {
-   background-image: url('image/leaderboard-background.jpeg');
-    -webkit-background-size: cover;
-    -moz-background-size: cover; 
-    -o-background-size: cover;
-    background-size: cover;
+   
+    background-image: url('image/leaderboard-background.jpeg');
+    background-size: cover;                      
+    background-repeat:   no-repeat;
+    background-position: center center;
+    height: 100vh;
 }
 
 /* Modal Content Box */
