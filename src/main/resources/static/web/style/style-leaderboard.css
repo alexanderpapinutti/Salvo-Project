@@ -79,10 +79,10 @@ input[type=text], input[type=password] {
 
 body {
    background-image: url('image/leaderboard-background.jpeg');
-    background-size: cover;                      
-    background-repeat:   no-repeat;
-   height: 100vh;
-    background-position: center center;
+    -webkit-background-size: cover;
+    -moz-background-size: cover; 
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 /* Modal Content Box */
@@ -97,8 +97,18 @@ body {
 #login-button{
     margin-top: 5px;
     width: 50%;
+    background: coral;
+    border: none;
     
 }
+
+#signUp-button{
+    width: 50%;
+    margin-top: 5px;
+    background: coral;
+    border: none;
+}
+
 
 ol li button {
     background: none;

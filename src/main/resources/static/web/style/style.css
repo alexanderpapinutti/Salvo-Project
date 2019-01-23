@@ -22,6 +22,10 @@ body {
     height: 60px;
 }
 
+.possible-cell {
+    background: rgba(0,255,0,0.5)
+}
+
 #ship-submission {
     width: 120px;
     background: black;

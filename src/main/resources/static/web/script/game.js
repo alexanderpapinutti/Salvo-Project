@@ -22,19 +22,8 @@ const mainData = {
     shipSize: '',
     placedShips: [],
     occupiedCells: [],
+    possibleCells: [],
     userGuesses: [],
-}
-
-loadGamePlayerData();
-
-function loadGamePlayerData() {
-    $("#tableContainer").append(generateUserGrid("U", mainData.columnHeaders, mainData.rowHeaders));
-    $("#tableContainerSalvos").append(generateUserGrid("S", mainData.columnHeaders, mainData.rowHeaders));
-    getData();
-    var userTable = document.getElementById("U");
-    var salvoTable = document.getElementById("S");
-    clickShip(userTable);
-    clickSalvoCell(salvoTable);
 }
 
 function letter(number) {
@@ -101,6 +90,15 @@ function resetCells() {
     mainData.bottomCells = [];
     mainData.rightCells = [];
     mainData.leftCells = [];
+    mainData.possibleCells = [];
+}
+
+function setPossibleCells(array) {
+    if (array.length == mainData.shipSize){
+        for(var i=0; i < array.length; i++){
+            mainData.possibleCells.push(array[i]);
+        }
+    }
 }
 
 function findAdjacentCells(e) {
@@ -149,6 +147,11 @@ function findAdjacentCells(e) {
             mainData.adjacentCells.push(cell);
         }
     }
+    setPossibleCells(mainData.topCells);
+    setPossibleCells(mainData.bottomCells);
+    setPossibleCells(mainData.leftCells);
+    setPossibleCells(mainData.rightCells);
+    
     e.target.classList.add('clicked');
 }
 
@@ -209,16 +212,30 @@ function setClickId(e) {
 function clickSalvoCell(table) {
     table.addEventListener('click', (e) => {
         if (e.target.id != "") {
+            $("#ship-selection").hide();
+            $("#salvo-submission").show();
+            
             if (mainData.userGuesses.length < 5) {
                 mainData.userGuesses.push(setClickId(e));
                 e.target.classList.add('clicked');
-
             } else {
                 swal("All salvos have been placed");
             }
         }
 
     });
+}
+
+function removePossibleCells(array, setclass){
+    for (var i = 0; i < array.length; i++) {
+        $("#U" + array[i]).removeClass(setclass);
+    }
+}
+
+function fillPossibleCells(array, setclass) {
+    for (var i = 0; i < array.length; i++) {
+        $("#U" + array[i]).addClass(setclass);
+    }
 }
 
 function fillOccupiedCells() {
@@ -242,9 +259,11 @@ function clickShip(table) {
             if (mainData.shipPlacementSteps == 1) {
                 mainData.firstClickId = setClickId(e);
                 findAdjacentCells(e);
+                fillPossibleCells(mainData.possibleCells, "possible-cell")
                 mainData.shipPlacementSteps = 2;
             } else if (mainData.shipPlacementSteps == 2) {
                 setShipOrientation(setClickId(e));
+                removePossibleCells(mainData.possibleCells, "possible-cell");
                 fillOccupiedCells();
                 hideUsedShips();
                 if (mainData.placedShips.length == 5) {
@@ -368,9 +387,8 @@ function deleteShips() {
     $("#ship-submission").css("background", "black")
 }
 
-function sumbitShips() {
+function postShips() {
     if (mainData.shipPlacementSteps == 3) {
-
         for (var i = 0; i < mainData.placedShips.length; i++) {
             fetch("/api/games/players/" + mainData.gamePlayerId + "/ships", {
                     credentials: 'include',
@@ -389,16 +407,40 @@ function sumbitShips() {
                         swal("Denied", "All ships have been placed");
                         mainData.shipPlacementSteps = 0;
                     } else {
-                        
-                        r.json().then(location.reload());
+
+//                        r.json().then(location.reload());
+                        r.json();
+                        mainData.shipPlacementSteps = 4;
                     }
                 })
                 .catch(e => console.log(e))
         }
 
     }
+}
 
+function postSalvos() {
+    fetch("/api/games/players/" + mainData.gamePlayerId + "/salvos", {
+            credentials: 'include',
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                locations: mainData.userGuesses,
+            }),
+        })
+        .then(r => {
+            if (r.status == 403) {
+                swal("Denied", "Max guesses limit reached");
+            } else {
 
+                r.json().then(location.reload());
+                
+            }
+        })
+        .catch(e => console.log(e))
 }
 
 function setShip(ship) {
@@ -426,3 +468,17 @@ function setShipSize(ship) {
 
     }
 }
+
+function loadGamePlayerData() {
+    $("#tableContainer").append(generateUserGrid("U", mainData.columnHeaders, mainData.rowHeaders));
+    $("#tableContainerSalvos").append(generateUserGrid("S", mainData.columnHeaders, mainData.rowHeaders));
+    getData();
+    $("#salvo-submission").hide();
+    $("#ship-submission").show();
+    var userTable = document.getElementById("U");
+    var salvoTable = document.getElementById("S");
+    clickShip(userTable);
+    clickSalvoCell(salvoTable);
+}
+
+loadGamePlayerData();
