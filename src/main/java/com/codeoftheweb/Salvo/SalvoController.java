@@ -212,11 +212,11 @@ public class SalvoController {
                         .stream()
                         .map(salvo -> makeSalvoDTO(salvo))
                         .collect(Collectors.toList()));
+                dto.put("hits", countHits(gamePlayer));
+                dto.put("enemyHits", countHits(enemy));
             }
         } else {
             dto.put("error", "Not your game");
-
-//            return new ResponseEntity<Map<String, Object>>(makeMap("error", "Not your game"), HttpStatus.FORBIDDEN);
         }
         return dto;
     }
@@ -237,6 +237,42 @@ public class SalvoController {
         dto.put("turn", salvo.getTurn());
         dto.put("locations", salvo.getLocations());
         return dto;
+    }
+
+    private List<String> countHits (GamePlayer gamePlayer){
+        List<String> hits = new ArrayList<>();
+        List<String> shipArray = makeShipLocationArray(getEnemyGamePlayer(gamePlayer).getShips());
+        List<String> salvoArray =makeSalvoLocationArray(gamePlayer.getSalvos());
+        System.out.println(salvoArray);
+        for (int i = 0; i < salvoArray.size(); ++i){
+            for (int j = 0; j < shipArray.size(); ++j){
+                if (salvoArray.get(i) == shipArray.get(j)){
+                     hits.add(salvoArray.get(i));
+                }
+            }
+        }
+        return hits;
+    }
+
+    private List<String> makeSalvoLocationArray (Set<Salvo> salvos){
+        List<String> array = new ArrayList<>();
+        for (Salvo salvo : salvos) {
+            for (String location : salvo.getLocations()) {
+                array.add(location);
+            }
+        }
+        return array;
+
+    }
+
+    private List<String> makeShipLocationArray (Set<Ship> ships){
+        List<String> array = new ArrayList<>();
+        for (Ship ship : ships) {
+            for (String location : ship.getLocation()) {
+                array.add(location);
+            }
+        }
+        return array;
     }
 
     private Map<String, Object> makeGamePlayerDTO(GamePlayer gamePlayer) {

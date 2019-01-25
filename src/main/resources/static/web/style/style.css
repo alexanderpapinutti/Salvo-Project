@@ -99,6 +99,7 @@ body {
 
 .clicked {
     background: green;
+    
 }
 
 .center-title {
@@ -242,6 +243,16 @@ h1 {
 }
 
 .ship-location.Destroyer.enemy-guess {
+    background-color: red;
+    border: solid;
+}
+
+.ship-location.Aircraft-Carrier.enemy-guess {
+    background-color: red;
+    border: solid;
+}
+
+.ship-location.Battleship.enemy-guess {
     background-color: red;
     border: solid;
 }

@@ -24,6 +24,8 @@ const mainData = {
     occupiedCells: [],
     possibleCells: [],
     userGuesses: [],
+    hits: [],
+    enemyHits:[],
 }
 
 function activateModal() {
@@ -504,6 +506,7 @@ function gameDetails() {
 
 function getData() {
     $.getJSON("/api/game_view/" + location.search.split("=")[1], function (data) {
+        console.log(data)
         mainData.userShips = data.userShips;
         mainData.userSalvos = data.userSalvos;
         mainData.enemySalvos = data.enemySalvos;
