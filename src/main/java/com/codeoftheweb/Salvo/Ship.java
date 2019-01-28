@@ -17,6 +17,8 @@ public class Ship {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
     private String type;
+    private boolean isSunk;
+    private boolean isHit;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="gamePlayer_id")
@@ -32,6 +34,8 @@ public class Ship {
         this.gamePlayer = gamePlayer;
         this.type = type;
         this.location = location;
+        this.isSunk = false;
+        this.isHit = false;
     }
     @JsonIgnore
     public GamePlayer getGamePlayer() {
@@ -61,5 +65,25 @@ public class Ship {
 
     public void setLocation(List<String> location) {
         this.location = location;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public boolean isSunk() {
+        return isSunk;
+    }
+
+    public void setSunk(boolean sunk) {
+        isSunk = sunk;
+    }
+
+    public boolean isHit() {
+        return isHit;
+    }
+
+    public void setHit(boolean hit) {
+        isHit = hit;
     }
 }

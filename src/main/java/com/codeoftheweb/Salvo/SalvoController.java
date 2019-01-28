@@ -60,6 +60,8 @@ public class SalvoController {
     @RequestMapping(path = "/games/players/{gamePlayerId}/salvos", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> placeSalvos(@PathVariable Long gamePlayerId, @RequestBody Salvo salvo, Authentication authentication){
         GamePlayer gamePlayer = gamePlayerRepository.findOne(gamePlayerId);
+
+
         if(authentication == null){
             return new ResponseEntity<>(makeMap("error", "No user is logged in")
                     , HttpStatus.UNAUTHORIZED);
@@ -72,12 +74,10 @@ public class SalvoController {
         }else if(gamePlayer == null){
             return new ResponseEntity<>(makeMap("error", "This user does not exist")
                     , HttpStatus.FORBIDDEN);
-        }else if(gamePlayer.getSalvos().size() > 1) {
-            return new ResponseEntity<>(makeMap("error", "Salvo already fired for this turn")
-                    , HttpStatus.FORBIDDEN);
         }else {
+
             salvo.setGamePlayer(gamePlayer);
-            salvo.setTurn(1);
+            salvo.setTurn(getLastTurn(gamePlayer) + 1);
             salvoRepository.save(salvo);
             return new ResponseEntity<>(makeMap("success", "salvos posted"), HttpStatus.CREATED);
         }
@@ -212,8 +212,7 @@ public class SalvoController {
                         .stream()
                         .map(salvo -> makeSalvoDTO(salvo))
                         .collect(Collectors.toList()));
-                dto.put("hits", countHits(gamePlayer));
-                dto.put("enemyHits", countHits(enemy));
+                dto.put("history", makeHistoryDTO(gamePlayer));
             }
         } else {
             dto.put("error", "Not your game");
@@ -239,11 +238,47 @@ public class SalvoController {
         return dto;
     }
 
+    private Map<String, Object> makeHitsDTO (Ship ship){
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        List<String> array = new ArrayList<>();
+        GamePlayer enemy = getEnemyGamePlayer(ship.getGamePlayer());
+        for (int i =0; i < ship.getLocation().size(); ++i){
+            if (countHits(getEnemyGamePlayer(ship.getGamePlayer())).contains(ship.getLocation().get(i))){
+                dto.put("type", ship.getType());
+                array.add(ship.getLocation().get(i));
+                ship.setHit(true);
+            }
+
+        }
+        dto.put("location", array);
+        return dto;
+    }
+
+    private Map<String, Object>  makeHistoryDTO (GamePlayer gamePlayer) {
+        List<Integer> turns = gamePlayer.getSalvos()
+                            .stream()
+                            .map(r -> r.getTurn())
+                            .collect(Collectors.toList());
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        for (Integer turn : turns){
+            dto.put("turn", turn);
+            dto.put("userHits", countHits(gamePlayer));
+            dto.put("hitShips", getEnemyGamePlayer(gamePlayer).getShips()
+                    .stream()
+                    .map(ship -> makeHitsDTO(ship))
+                    .collect(Collectors.toList()));
+            dto.put("sunkUserShips", sunkShips(gamePlayer.getShips()));
+            dto.put("sunkEnemyShips", sunkShips(getEnemyGamePlayer(gamePlayer).getShips()));
+            dto.put("enemyHits", countHits(getEnemyGamePlayer(gamePlayer)));
+            return dto;
+        }
+        return dto;
+    }
+
     private List<String> countHits (GamePlayer gamePlayer){
         List<String> hits = new ArrayList<>();
         List<String> shipArray = makeShipLocationArray(getEnemyGamePlayer(gamePlayer).getShips());
-        List<String> salvoArray =makeSalvoLocationArray(gamePlayer.getSalvos());
-        System.out.println(salvoArray);
+        List<String> salvoArray = makeSalvoLocationArray(gamePlayer.getSalvos());
         for (int i = 0; i < salvoArray.size(); ++i){
             for (int j = 0; j < shipArray.size(); ++j){
                 if (salvoArray.get(i) == shipArray.get(j)){
@@ -263,6 +298,35 @@ public class SalvoController {
         }
         return array;
 
+    }
+
+    private int getLastTurn (GamePlayer gamePlayer) {
+        int lastTurn = 0;
+        for (Salvo salvo : gamePlayer.getSalvos()) {
+            if (lastTurn < salvo.getTurn())
+                lastTurn = salvo.getTurn();
+        }
+        return lastTurn;
+    }
+
+    private List<String> sunkShips (Set<Ship> ships){
+        List<String> array = new ArrayList<>();
+        for (Ship ship : ships){
+            GamePlayer enemy = getEnemyGamePlayer(ship.getGamePlayer());
+            if(countHits(enemy).containsAll(ship.getLocation()) == true){
+                ship.setSunk(true);
+                array.add(ship.getType());
+            }
+        }
+        return array;
+    }
+
+    private List<String> makeShipArray (Set<Ship> ships){
+        List<String> array = new ArrayList<>();
+        for (Ship ship : ships) {
+            array.add(ship.getType());
+        }
+        return array;
     }
 
     private List<String> makeShipLocationArray (Set<Ship> ships){

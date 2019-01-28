@@ -431,8 +431,8 @@ function postShips() {
                         mainData.shipPlacementSteps = 0;
                     } else {
 
-                        //                        r.json().then(location.reload());
-                        r.json();
+                        r.json().then(location.reload());
+                        
                         mainData.shipPlacementSteps = 4;
                     }
                 })
