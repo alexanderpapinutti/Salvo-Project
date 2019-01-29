@@ -212,7 +212,10 @@ public class SalvoController {
                         .stream()
                         .map(salvo -> makeSalvoDTO(salvo))
                         .collect(Collectors.toList()));
-                dto.put("history", makeHistoryDTO(gamePlayer));
+                dto.put("history", gamePlayer.getSalvos()
+                        .stream()
+                        .map(salvo -> makeHistoryDTO(salvo))
+                        .collect(Collectors.toList()));
             }
         } else {
             dto.put("error", "Not your game");
@@ -243,45 +246,46 @@ public class SalvoController {
         List<String> array = new ArrayList<>();
         GamePlayer enemy = getEnemyGamePlayer(ship.getGamePlayer());
         for (int i =0; i < ship.getLocation().size(); ++i){
-            if (countHits(getEnemyGamePlayer(ship.getGamePlayer())).contains(ship.getLocation().get(i))){
+            if (countHits(enemy).contains(ship.getLocation().get(i))){
                 dto.put("type", ship.getType());
                 array.add(ship.getLocation().get(i));
                 ship.setHit(true);
+                dto.put("location", array);
             }
 
         }
-        dto.put("location", array);
+
         return dto;
     }
 
-    private Map<String, Object>  makeHistoryDTO (GamePlayer gamePlayer) {
-        List<Integer> turns = gamePlayer.getSalvos()
-                            .stream()
-                            .map(r -> r.getTurn())
-                            .collect(Collectors.toList());
+    private Map<String, Object>  makeHistoryDTO (Salvo salvo) {
+
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        for (Integer turn : turns){
-            dto.put("turn", turn);
-            dto.put("userHits", countHits(gamePlayer));
-            dto.put("hitShips", getEnemyGamePlayer(gamePlayer).getShips()
-                    .stream()
-                    .map(ship -> makeHitsDTO(ship))
-                    .collect(Collectors.toList()));
-            dto.put("sunkUserShips", sunkShips(gamePlayer.getShips()));
-            dto.put("sunkEnemyShips", sunkShips(getEnemyGamePlayer(gamePlayer).getShips()));
-            dto.put("enemyHits", countHits(getEnemyGamePlayer(gamePlayer)));
-            return dto;
-        }
+        dto.put("turn", salvo.getTurn());
+        dto.put("userHits", countHits(salvo.getGamePlayer()));
+        dto.put("hitShips", countSalvoHits(salvo));
+//        dto.put("hitShips", salvo.getGamePlayer().getShips()
+//                .stream()
+//                .map(ship -> hitShips(ship))
+//                .collect(Collectors.toList()));
+//        dto.put("hitShips", getEnemyGamePlayer(salvo.getGamePlayer()).getShips()
+//                .stream()
+//                .map(ship -> makeHitsDTO(ship))
+//                .collect(Collectors.toList()));
+        dto.put("sunkUserShips", sunkShips(salvo.getGamePlayer().getShips()));
+        dto.put("sunkEnemyShips", sunkShips(getEnemyGamePlayer(salvo.getGamePlayer()).getShips()));
+        dto.put("enemyHits", countHits(getEnemyGamePlayer(salvo.getGamePlayer())));
         return dto;
+
     }
 
     private List<String> countHits (GamePlayer gamePlayer){
         List<String> hits = new ArrayList<>();
-        List<String> shipArray = makeShipLocationArray(getEnemyGamePlayer(gamePlayer).getShips());
+        List<String> enemyShipArray = makeShipLocationArray(getEnemyGamePlayer(gamePlayer).getShips());
         List<String> salvoArray = makeSalvoLocationArray(gamePlayer.getSalvos());
         for (int i = 0; i < salvoArray.size(); ++i){
-            for (int j = 0; j < shipArray.size(); ++j){
-                if (salvoArray.get(i) == shipArray.get(j)){
+            for (int j = 0; j < enemyShipArray.size(); ++j){
+                if (salvoArray.get(i) == enemyShipArray.get(j)){
                      hits.add(salvoArray.get(i));
                 }
             }
@@ -289,11 +293,31 @@ public class SalvoController {
         return hits;
     }
 
+    private Map<String,Object> countSalvoHits (Salvo salvo){
+        List<String> array = new ArrayList<>();
+        List<String> shipType = new ArrayList<>();
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        List<String> enemyShipArray = makeShipLocationArray(getEnemyGamePlayer(salvo.getGamePlayer()).getShips());
+        for (int i = 0; i < salvo.getLocations().size(); ++i){
+            for (int j = 0; j < enemyShipArray.size(); ++j){
+                if (salvo.getLocations().get(i) == enemyShipArray.get(j)){
+                    array.add(enemyShipArray.get(j));
+                    dto.put("hitLocation", array);
+                    dto.put("shipsHit", hitShips(getEnemyGamePlayer(salvo.getGamePlayer()).getShips()));
+                    dto.put("turn", salvo.getTurn());
+
+                }
+            }
+        }
+        return dto;
+    }
+
     private List<String> makeSalvoLocationArray (Set<Salvo> salvos){
         List<String> array = new ArrayList<>();
         for (Salvo salvo : salvos) {
             for (String location : salvo.getLocations()) {
                 array.add(location);
+
             }
         }
         return array;
@@ -309,6 +333,19 @@ public class SalvoController {
         return lastTurn;
     }
 
+    private List<String> hitShips (Salvo salvo){
+        List<String> array = new ArrayList<>();
+        GamePlayer enemy = getEnemyGamePlayer(salvo.getGamePlayer());
+        List<String> s
+        for (int i = 0; i < enemy.getShips().size(); ++i){
+            for (int j = 0; j < salvo.getLocations().size(); ++j){
+                if ()
+            }
+        }
+
+
+    }
+
     private List<String> sunkShips (Set<Ship> ships){
         List<String> array = new ArrayList<>();
         for (Ship ship : ships){
@@ -317,14 +354,6 @@ public class SalvoController {
                 ship.setSunk(true);
                 array.add(ship.getType());
             }
-        }
-        return array;
-    }
-
-    private List<String> makeShipArray (Set<Ship> ships){
-        List<String> array = new ArrayList<>();
-        for (Ship ship : ships) {
-            array.add(ship.getType());
         }
         return array;
     }
