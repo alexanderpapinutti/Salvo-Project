@@ -208,6 +208,7 @@ public class SalvoController {
                     .map(salvo -> makeSalvoDTO(salvo))
                     .collect(Collectors.toList()));
             if (enemy != null) {
+
                 dto.put("enemyInfo", enemy.getPlayer());
                 dto.put("enemySalvos", enemy.getSalvos()
                         .stream()
@@ -233,8 +234,9 @@ public class SalvoController {
         GamePlayer gamePlayer = salvo.getGamePlayer();
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("turn", salvo.getTurn());
-        dto.put("events", getHitShips(getEnemyGamePlayer(salvo.getGamePlayer()).getShips(), salvo));
-        dto.put("sunkShips", getSunkShips(enemy.getShips(), gamePlayer.getSalvos()));
+        dto.put("events", getHitShips(enemy.getShips(), salvo));
+        dto.put("sunkEnemyShips", getSunkShips(enemy.getShips()));
+
         return dto;
 
     }
@@ -262,16 +264,14 @@ public class SalvoController {
 
     }
 
-//    private List<String> arraySunkShips (Ship ship, Set<Salvo> salvos){
-//        if (salvos.containsAll(ship.getLocation()))
-//    }
-
-    private List<Object> getSunkShips(Set<Ship> ships, Set<Salvo> salvos){
+    private List<Object> getSunkShips(Set<Ship> ships){
         List<Object> historySalvos = new ArrayList<>();
         for (Ship ship : ships){
-
-            historySalvos.add(getSinks(ship));
-
+            if (getSinks(ship)){
+                ship.isSunk();
+                historySalvos.add(ship.getType());
+                shipRepository.save(ship);
+            }
         }
 
         return historySalvos;
@@ -308,7 +308,6 @@ public class SalvoController {
                         .stream()
                         .anyMatch(hit -> hit == location));
     }
-
 
     private int getLastTurn (GamePlayer gamePlayer) {
         int lastTurn = 0;
