@@ -504,6 +504,15 @@ function gameDetails() {
     showElement("modal-wrapper");
 }
 
+function eventTable(history){
+    var turnsArray= [];
+    for (var i = 0; i < history.length; i++){
+        turnsArray.push(history[i]);
+    }
+    turnsArray.sort(function(a, b){return a.turn - b.turn});
+    console.log(turnsArray)
+}
+
 function getData() {
     $.getJSON("/api/game_view/" + location.search.split("=")[1], function (data) {
         console.log(data)
@@ -523,6 +532,7 @@ function getData() {
             document.getElementById("player2").innerHTML = "Waiting for Opponnent...";
         }
         setGamePlayerId(data);
+        eventTable(data.historyHitsOnEnemy);
     })
 }
 

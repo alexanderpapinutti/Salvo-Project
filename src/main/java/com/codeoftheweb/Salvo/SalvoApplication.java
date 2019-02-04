@@ -113,11 +113,11 @@ public class SalvoApplication {
 			gamePlayerRepository.save(gamePlayer11);
 //			gamePlayerRepository.save(gamePlayer12);
 
-//			List<String> location1 = Arrays.asList("H2","H3","H3");
-//			List<String> location2 = Arrays.asList("E1", "F1", "G1");
-//			List<String> location3 = Arrays.asList("B4","B5");
-//			List<String> location4 = Arrays.asList("B5","C5","D5");
-//			List<String> location5 = Arrays.asList("F1","F2");
+			List<String> location1 = Arrays.asList("F1","G1","H1","I1","J1");
+			List<String> location2 = Arrays.asList("G2","H2","I2","J2");
+			List<String> location3 = Arrays.asList("H3","I3","J3");
+			List<String> location4 = Arrays.asList("H4","I4","J4");
+			List<String> location5 = Arrays.asList("J5","I5");
 //			List<String> location6 = Arrays.asList("B5","C5","D5");
 //			List<String> location7 = Arrays.asList("C6","C7");
 //			List<String> location8 = Arrays.asList("A2","A3","A4");
@@ -141,9 +141,11 @@ public class SalvoApplication {
 //			List<String> location26 = Arrays.asList("A2","A3","A4");
 //			List<String> location27 = Arrays.asList("G6","H6");
 //
-//			Ship ship1 = new Ship(gamePlayer1,"Destroyer", location1);
-//			Ship ship2 = new Ship(gamePlayer1,"Submarine", location2);
-//			Ship ship3 = new Ship(gamePlayer1,"Patrol-Boat", location3);
+			Ship ship1 = new Ship(gamePlayer1,"Destroyer", location3);
+			Ship ship2 = new Ship(gamePlayer1,"Submarine", location4);
+			Ship ship3 = new Ship(gamePlayer1,"Patrol-Boat", location5);
+			Ship ship4 = new Ship(gamePlayer1,"Aircraft-Carrier", location1);
+			Ship ship5 = new Ship(gamePlayer1,"Battleship", location2);
 //			Ship ship4 = new Ship(gamePlayer2,"Destroyer", location4);
 //			Ship ship5 = new Ship(gamePlayer2,"Patrol-Boat", location5);
 //			Ship ship6 = new Ship(gamePlayer3,"Destroyer", location6);
@@ -169,11 +171,11 @@ public class SalvoApplication {
 //			Ship ship26 = new Ship(gamePlayer10,"Patrol-Boat", location26);
 //			Ship ship27 = new Ship(gamePlayer10,"Patrol-Boat", location27);
 //
-//			shipRepository.save(ship1);
-//			shipRepository.save(ship2);
-//			shipRepository.save(ship3);
-//			shipRepository.save(ship4);
-//			shipRepository.save(ship5);
+			shipRepository.save(ship1);
+			shipRepository.save(ship2);
+			shipRepository.save(ship3);
+			shipRepository.save(ship4);
+			shipRepository.save(ship5);
 //			shipRepository.save(ship6);
 //			shipRepository.save(ship7);
 //			shipRepository.save(ship8);
@@ -198,25 +200,25 @@ public class SalvoApplication {
 //			shipRepository.save(ship27);
 //
 //			List<String> p1r1 = Arrays.asList("B5","C5","F1");
-//			List<String> p2r1 = Arrays.asList("B4","B5","B6");
+			List<String> p2r1 = Arrays.asList("H1","I1","J1");
 //			List<String> p1r2 = Arrays.asList("F2","D5");
-//			List<String> p2r2 = Arrays.asList("E1","H3","A2");
+			List<String> p2r2 = Arrays.asList("F10","H10","A1");
 //			List<String> p1r3 = Arrays.asList("F3","D1","J10");
-//			List<String> p2r3 = Arrays.asList("F9","I7","I10");
+			List<String> p2r3 = Arrays.asList("F1","G1");
 //
 //			Salvo shotp1r1 = new Salvo(1, gamePlayer1, p1r1);
-//			Salvo shotp2r1 = new Salvo(1, gamePlayer2, p2r1);
+			Salvo shotp2r1 = new Salvo(1, gamePlayer2, p2r1);
 //			Salvo shotp1r2 = new Salvo(2, gamePlayer1, p1r2);
-//			Salvo shotp2r2 = new Salvo(2, gamePlayer2, p2r2);
+			Salvo shotp2r2 = new Salvo(2, gamePlayer2, p2r2);
 //			Salvo shotp1r3 = new Salvo(3, gamePlayer1, p1r3);
-//			Salvo shotp2r3 = new Salvo(3, gamePlayer2, p2r3);
+			Salvo shotp2r3 = new Salvo(3, gamePlayer2, p2r3);
 //
 //			salvoRepository.save(shotp1r1);
-//			salvoRepository.save(shotp2r1);
+			salvoRepository.save(shotp2r1);
 //			salvoRepository.save(shotp1r2);
-//			salvoRepository.save(shotp2r2);
+			salvoRepository.save(shotp2r2);
 //			salvoRepository.save(shotp1r3);
-//			salvoRepository.save(shotp2r3);
+			salvoRepository.save(shotp2r3);
 
 			Score score1 = new Score(1, finishDate, player1, game1);
 			Score score2 = new Score(0, finishDate, player2, game1);

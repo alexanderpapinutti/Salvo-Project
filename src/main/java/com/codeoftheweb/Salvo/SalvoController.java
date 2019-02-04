@@ -3,6 +3,7 @@ package com.codeoftheweb.Salvo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -212,7 +213,11 @@ public class SalvoController {
                         .stream()
                         .map(salvo -> makeSalvoDTO(salvo))
                         .collect(Collectors.toList()));
-                dto.put("history", gamePlayer.getSalvos()
+                dto.put("historyHitsOnEnemy", gamePlayer.getSalvos()
+                        .stream()
+                        .map(salvo -> makeHistoryDTO(salvo))
+                        .collect(Collectors.toList()));
+                dto.put("historyHitsOnUser", enemy.getSalvos()
                         .stream()
                         .map(salvo -> makeHistoryDTO(salvo))
                         .collect(Collectors.toList()));
@@ -221,6 +226,97 @@ public class SalvoController {
             dto.put("error", "Not your game");
         }
         return dto;
+    }
+
+    private Map<String, Object>  makeHistoryDTO (Salvo salvo) {
+        GamePlayer enemy = getEnemyGamePlayer(salvo.getGamePlayer());
+        GamePlayer gamePlayer = salvo.getGamePlayer();
+        Map<String, Object> dto = new LinkedHashMap<String, Object>();
+        dto.put("turn", salvo.getTurn());
+        dto.put("events", getHitShips(getEnemyGamePlayer(salvo.getGamePlayer()).getShips(), salvo));
+        dto.put("sunkShips", getSunkShips(enemy.getShips(), gamePlayer.getSalvos()));
+        return dto;
+
+    }
+
+    private List<Object> getHitShips (Set<Ship> ships, Salvo salvo){
+        List<Object> turnHistoric = new ArrayList<>();
+
+        for(Ship ship : ships){
+            Map<String, Object> dto = new LinkedHashMap<String, Object>();
+            List<String> hitsOnShip = new ArrayList<>();
+            for (String location : salvo.getLocations()) {
+                if (ship.getLocation().contains(location))
+                    hitsOnShip.add(location);
+            }
+            if (hitsOnShip.size() > 0) {
+                dto.put("type", ship.getType());
+                dto.put("hits", hitsOnShip);
+
+                turnHistoric.add(dto);
+            }
+
+        }
+
+        return turnHistoric;
+
+    }
+
+//    private List<String> arraySunkShips (Ship ship, Set<Salvo> salvos){
+//        if (salvos.containsAll(ship.getLocation()))
+//    }
+
+    private List<Object> getSunkShips(Set<Ship> ships, Set<Salvo> salvos){
+        List<Object> historySalvos = new ArrayList<>();
+        for (Ship ship : ships){
+
+            historySalvos.add(getSinks(ship));
+
+        }
+
+        return historySalvos;
+
+    }
+
+    private List<String> shipLocations (GamePlayer gamePlayer) {
+        return gamePlayer.getShips()
+                .stream()
+                .flatMap(ship -> ship.getLocation().stream())
+                .collect(Collectors.toList());
+    }
+
+    private List<String> salvoLocations (GamePlayer gamePlayer) {
+        return gamePlayer.getSalvos()
+                .stream()
+                .flatMap(salvo -> salvo.getLocations().stream())
+                .collect(Collectors.toList());
+    }
+
+    private List<String> getHits(GamePlayer gamePlayer){
+        GamePlayer enemy = getEnemyGamePlayer(gamePlayer);
+        return shipLocations(enemy)
+                .stream()
+                .filter(cell -> salvoLocations(gamePlayer).contains(cell))
+                .collect(Collectors.toList());
+    }
+
+    private boolean getSinks(Ship ship){
+        GamePlayer enemy = getEnemyGamePlayer(ship.getGamePlayer());
+        return ship.getLocation()
+                .stream()
+                .allMatch(location -> getHits(enemy)
+                        .stream()
+                        .anyMatch(hit -> hit == location));
+    }
+
+
+    private int getLastTurn (GamePlayer gamePlayer) {
+        int lastTurn = 0;
+        for (Salvo salvo : gamePlayer.getSalvos()) {
+            if (lastTurn < salvo.getTurn())
+                lastTurn = salvo.getTurn();
+        }
+        return lastTurn;
     }
 
     private Map<String, Object> makeGameDTO(Game game) {
@@ -239,133 +335,6 @@ public class SalvoController {
         dto.put("turn", salvo.getTurn());
         dto.put("locations", salvo.getLocations());
         return dto;
-    }
-
-    private Map<String, Object> makeHitsDTO (Ship ship){
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        List<String> array = new ArrayList<>();
-        GamePlayer enemy = getEnemyGamePlayer(ship.getGamePlayer());
-        for (int i =0; i < ship.getLocation().size(); ++i){
-            if (countHits(enemy).contains(ship.getLocation().get(i))){
-                dto.put("type", ship.getType());
-                array.add(ship.getLocation().get(i));
-                ship.setHit(true);
-                dto.put("location", array);
-            }
-
-        }
-
-        return dto;
-    }
-
-    private Map<String, Object>  makeHistoryDTO (Salvo salvo) {
-
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        dto.put("turn", salvo.getTurn());
-        dto.put("userHits", countHits(salvo.getGamePlayer()));
-        dto.put("hitShips", countSalvoHits(salvo));
-//        dto.put("hitShips", salvo.getGamePlayer().getShips()
-//                .stream()
-//                .map(ship -> hitShips(ship))
-//                .collect(Collectors.toList()));
-//        dto.put("hitShips", getEnemyGamePlayer(salvo.getGamePlayer()).getShips()
-//                .stream()
-//                .map(ship -> makeHitsDTO(ship))
-//                .collect(Collectors.toList()));
-        dto.put("sunkUserShips", sunkShips(salvo.getGamePlayer().getShips()));
-        dto.put("sunkEnemyShips", sunkShips(getEnemyGamePlayer(salvo.getGamePlayer()).getShips()));
-        dto.put("enemyHits", countHits(getEnemyGamePlayer(salvo.getGamePlayer())));
-        return dto;
-
-    }
-
-    private List<String> countHits (GamePlayer gamePlayer){
-        List<String> hits = new ArrayList<>();
-        List<String> enemyShipArray = makeShipLocationArray(getEnemyGamePlayer(gamePlayer).getShips());
-        List<String> salvoArray = makeSalvoLocationArray(gamePlayer.getSalvos());
-        for (int i = 0; i < salvoArray.size(); ++i){
-            for (int j = 0; j < enemyShipArray.size(); ++j){
-                if (salvoArray.get(i) == enemyShipArray.get(j)){
-                     hits.add(salvoArray.get(i));
-                }
-            }
-        }
-        return hits;
-    }
-
-    private Map<String,Object> countSalvoHits (Salvo salvo){
-        List<String> array = new ArrayList<>();
-        List<String> shipType = new ArrayList<>();
-        Map<String, Object> dto = new LinkedHashMap<String, Object>();
-        List<String> enemyShipArray = makeShipLocationArray(getEnemyGamePlayer(salvo.getGamePlayer()).getShips());
-        for (int i = 0; i < salvo.getLocations().size(); ++i){
-            for (int j = 0; j < enemyShipArray.size(); ++j){
-                if (salvo.getLocations().get(i) == enemyShipArray.get(j)){
-                    array.add(enemyShipArray.get(j));
-                    dto.put("hitLocation", array);
-                    dto.put("shipsHit", hitShips(getEnemyGamePlayer(salvo.getGamePlayer()).getShips()));
-                    dto.put("turn", salvo.getTurn());
-
-                }
-            }
-        }
-        return dto;
-    }
-
-    private List<String> makeSalvoLocationArray (Set<Salvo> salvos){
-        List<String> array = new ArrayList<>();
-        for (Salvo salvo : salvos) {
-            for (String location : salvo.getLocations()) {
-                array.add(location);
-
-            }
-        }
-        return array;
-
-    }
-
-    private int getLastTurn (GamePlayer gamePlayer) {
-        int lastTurn = 0;
-        for (Salvo salvo : gamePlayer.getSalvos()) {
-            if (lastTurn < salvo.getTurn())
-                lastTurn = salvo.getTurn();
-        }
-        return lastTurn;
-    }
-
-    private List<String> hitShips (Salvo salvo){
-        List<String> array = new ArrayList<>();
-        GamePlayer enemy = getEnemyGamePlayer(salvo.getGamePlayer());
-        List<String> s
-        for (int i = 0; i < enemy.getShips().size(); ++i){
-            for (int j = 0; j < salvo.getLocations().size(); ++j){
-                if ()
-            }
-        }
-
-
-    }
-
-    private List<String> sunkShips (Set<Ship> ships){
-        List<String> array = new ArrayList<>();
-        for (Ship ship : ships){
-            GamePlayer enemy = getEnemyGamePlayer(ship.getGamePlayer());
-            if(countHits(enemy).containsAll(ship.getLocation()) == true){
-                ship.setSunk(true);
-                array.add(ship.getType());
-            }
-        }
-        return array;
-    }
-
-    private List<String> makeShipLocationArray (Set<Ship> ships){
-        List<String> array = new ArrayList<>();
-        for (Ship ship : ships) {
-            for (String location : ship.getLocation()) {
-                array.add(location);
-            }
-        }
-        return array;
     }
 
     private Map<String, Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
