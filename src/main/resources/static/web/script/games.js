@@ -213,11 +213,11 @@ function loadLeaderBoard() {
         var grid = "<table class='table table-hover table-dark text-center'>";
         grid += '<tbody>';
         grid += '<tr>';
-        grid += '<th id=leader-board-header class="text-center">Name</th>';
-        grid += '<th id=leader-board-header class="text-center">Total</th>';
-        grid += '<th id=leader-board-header class="text-center">Won</th>';
-        grid += '<th id=leader-board-header class="text-center">Lost</th>';
-        grid += '<th id=leader-board-header class="text-center">Tied</th>';
+        grid += '<th id=leader-board-header class="table text-center">Name</th>';
+        grid += '<th id=leader-board-header class="table text-center">Total</th>';
+        grid += '<th id=leader-board-header class="table text-center">Won</th>';
+        grid += '<th id=leader-board-header class="table text-center">Lost</th>';
+        grid += '<th id=leader-board-header class="table text-center">Tied</th>';
       
         grid += '</tr>';
         let rows = data.length;

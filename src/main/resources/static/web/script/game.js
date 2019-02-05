@@ -26,6 +26,7 @@ const mainData = {
     userGuesses: [],
     hits: [],
     enemyHits:[],
+    hitsOnEnemy: [],
 }
 
 function activateModal() {
@@ -504,21 +505,61 @@ function gameDetails() {
     showElement("modal-wrapper");
 }
 
-function eventTable(history){
+function sortEvents(data){
+    console.log(data)
     var turnsArray= [];
-    for (var i = 0; i < history.length; i++){
-        turnsArray.push(history[i]);
+    for (var i = 0; i < data.hitsOnEnemy.length; i++){
+        turnsArray.push(data.hitsOnEnemy[i]);
+        
     }
     turnsArray.sort(function(a, b){return a.turn - b.turn});
-    console.log(turnsArray)
+    
+    return turnsArray;
+}
+
+function makeEventsTable (data){
+//    var rows = data.length;
+    console.log(data)
+//    var userEvents = data.hitsOnUser;
+//    console.log(userEvents)
+//    console.log(data)
+//    var table = "<table id='eventsTable' class='table text-center'>";
+//    table += "<thead>";
+//    table += "<tr>";
+//    table += "<th scope='col'>Turn</th>";
+//    table += "<th scope='col'>Player Casualties</th>";
+//    table += "<th scope='col'>Enemy Casualties</th>";
+//    table + "</tr>";
+//    table += "</thead>";
+//    table += "<tbody>";
+//    for (var i = 0; i< rows; i++){
+//        console.log(data[i])
+//        table += "<tr>";
+//        table += "<td>" + data[i].turn +"</td>";
+//        for (var j = 0; j < data[i].events.length; j++){
+//            table += "<td>" + data[i].events[j].type +" "+ data[i].events[j].hits.length +"</td>";    
+//        }
+//        
+//        table += "<td></td>";
+//        table += "</tr>";
+//        
+//    }
+//    table += "</tbody>";
+//    table += "</table>";
+//    return table;
+
 }
 
 function getData() {
     $.getJSON("/api/game_view/" + location.search.split("=")[1], function (data) {
-        console.log(data)
         mainData.userShips = data.userShips;
         mainData.userSalvos = data.userSalvos;
         mainData.enemySalvos = data.enemySalvos;
+        mainData.hitsOnEnemy = data.hitsOnEnemy;
+        console.log(mainData.hitsOnEnemy);
+        
+//        makeEventsTable(sortEvents(data));
+//        $("#eventsDiv").append(makeEventsTable(sortEvents(data)));
         printShips(mainData.userShips);
         printSalvos('#S', mainData.userSalvos, 'salvo-location');
         printSalvos('#U', mainData.enemySalvos, 'enemy-guess');
@@ -532,7 +573,8 @@ function getData() {
             document.getElementById("player2").innerHTML = "Waiting for Opponnent...";
         }
         setGamePlayerId(data);
-        eventTable(data.historyHitsOnEnemy);
+        
+        
     })
 }
 
