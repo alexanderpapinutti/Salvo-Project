@@ -239,8 +239,7 @@ public class SalvoController {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("turn", salvo.getTurn());
         dto.put("events", getHitShips(enemy.getShips(), salvo));
-        dto.put("sunkEnemyShips", getSunkShips(enemy.getShips()));
-        dto.put("sunkUserShips", getSunkShips(gamePlayer.getShips()));
+        dto.put("sunkShips", getSunkShips(enemy.getShips()));
 
         return dto;
 
@@ -293,7 +292,9 @@ public class SalvoController {
         for (Ship ship : ships){
             GamePlayer enemy = getEnemyGamePlayer(ship.getGamePlayer());
             List<Object> hitOnTheShip = new ArrayList<>();
-            for (Salvo salvo : enemy.getSalvos()) {
+            List<Salvo> salvos = enemy.getSalvos().stream().collect(Collectors.toList());
+            Collections.sort(salvos, (s1,s2)-> s1.getTurn() - s2.getTurn());
+            for (Salvo salvo : salvos) {
                 List<String> salvoLocations = salvo.getLocations();
                 for (String location : salvoLocations) {
                     if (ship.getLocation().contains(location)) {
@@ -303,10 +304,11 @@ public class SalvoController {
                 if(hitOnTheShip.containsAll(ship.getLocation())){
                     Map<String, Object> map = new LinkedHashMap<>();
                     map.put("ship", ship.getType());
-                    map.put("turn", getLastTurn(salvo.getGamePlayer()));
+                    map.put("turn", salvo.getTurn());
                     array.add(map);
                     break;
                 }
+
             }
         }
         return array;
@@ -346,6 +348,10 @@ public class SalvoController {
                 .collect(Collectors.toList()));
         return dto;
     }
+
+//    private List<String> turnSunk (Set<Salvo> salvos){
+//        return getLastTurn(salvo.getGamePlayer());
+//    }
 
     private Map<String, Object> makeSalvoDTO(Salvo salvo) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
