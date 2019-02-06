@@ -506,6 +506,8 @@ function gameDetails() {
     showElement("modal-wrapper");
 }
 
+// ---------------Need update ---------------------
+
 function sortUserEvents(data) {
     var turnsArray = [];
     for (var i = 0; i < data.length; i++) {
@@ -530,23 +532,23 @@ function sortEnemyEvents(data) {
     return mainData.hitsOnEnemy = turnsArray;
 }
 
-function makeEnemySunkShips () {
+function makeEnemySunkShips() {
     var userShips = "<p> Sunk Enemy Ships: ";
-    for (var i = 0; i < mainData.hitsOnEnemy[0].sunkShips.length; i++){
-        userShips += " ("+mainData.hitsOnEnemy[0].sunkShips[i].turn+") "+mainData.hitsOnEnemy[0].sunkShips[i].ship;
+    for (var i = 0; i < mainData.hitsOnEnemy[0].sunkShips.length; i++) {
+        userShips += " (#turn " + mainData.hitsOnEnemy[0].sunkShips[i].turn + ") " + mainData.hitsOnEnemy[0].sunkShips[i].ship;
     }
     userShips += " </p>";
-    
+
     return userShips;
 }
 
-function makeUserSunkShips () {
+function makeUserSunkShips() {
     var userShips = "<p> Sunk User Ships: ";
-    for (var i = 0; i < mainData.hitsOnUser[0].sunkShips.length; i++){
-        userShips += " ("+mainData.hitsOnUser[0].sunkShips[i].turn+") "+mainData.hitsOnUser[0].sunkShips[i].ship;
+    for (var i = 0; i < mainData.hitsOnUser[0].sunkShips.length; i++) {
+        userShips += " (#turn " + mainData.hitsOnUser[0].sunkShips[i].turn + ") " + mainData.hitsOnUser[0].sunkShips[i].ship;
     }
     userShips += " </p>";
-    
+
     return userShips;
 }
 
@@ -565,15 +567,15 @@ function makeEventsTable() {
         table += "<td>" + mainData.hitsOnUser[i].turn + "</td>";
         table += "<td>";
         for (var j = 0; j < mainData.hitsOnUser[i].events.length; j++) {
-            table += " ("+mainData.hitsOnUser[i].events[j].hits.length+")" + mainData.hitsOnUser[i].events[j].type;
+            table += "(#hits " + mainData.hitsOnUser[i].events[j].hits.length + ") " + mainData.hitsOnUser[i].events[j].type;
         }
         table += "</td>";
         table += "<td>";
         for (var k = 0; k < mainData.hitsOnEnemy[i].events.length; k++) {
-            table += " (" +mainData.hitsOnEnemy[i].events[k].hits.length +")" + mainData.hitsOnEnemy[i].events[k].type;
+            table += " (#hits " + mainData.hitsOnEnemy[i].events[k].hits.length + ") " + mainData.hitsOnEnemy[i].events[k].type;
         }
         table += "</td>";
-        table+= "</tr>"
+        table += "</tr>"
     }
     table += "</tbody>";
     table += "</table>";
@@ -581,17 +583,22 @@ function makeEventsTable() {
 
 }
 
+// ---------------------------------------------------
 
 function getData() {
     $.getJSON("/api/game_view/" + location.search.split("=")[1], function (data) {
         mainData.userShips = data.userShips;
         mainData.userSalvos = data.userSalvos;
         mainData.enemySalvos = data.enemySalvos;
-        sortUserEvents(data.hitsOnUser)
-        sortEnemyEvents(data.hitsOnEnemy)
-        $("#eventsDiv").append(makeEventsTable());
-        $("#sunkUserShips").append(makeUserSunkShips());
-        $("#sunkEnemyShips").append(makeEnemySunkShips());
+
+//        sortUserEvents(data.hitsOnUser);
+//        sortEnemyEvents(data.hitsOnEnemy);
+//
+//        $("#eventsDiv").append(makeEventsTable());
+//        $("#sunkUserShips").append(makeUserSunkShips());
+//        $("#sunkEnemyShips").append(makeEnemySunkShips());
+
+
         printShips(mainData.userShips);
         printSalvos('#S', mainData.userSalvos, 'salvo-location');
         printSalvos('#U', mainData.enemySalvos, 'enemy-guess');
@@ -605,8 +612,6 @@ function getData() {
             document.getElementById("player2").innerHTML = "Waiting for Opponnent...";
         }
         setGamePlayerId(data);
-
-
     })
 }
 
