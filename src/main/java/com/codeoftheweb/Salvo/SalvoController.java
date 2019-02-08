@@ -3,6 +3,7 @@ package com.codeoftheweb.Salvo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -207,6 +208,8 @@ public class SalvoController {
                     .stream()
                     .map(salvo -> makeSalvoDTO(salvo))
                     .collect(Collectors.toList()));
+            dto.put("gameStatus", gameStatus(gamePlayer));
+
             if (enemy != null) {
                 sinkShips(enemy.getShips());
                 sinkShips(gamePlayer.getShips());
@@ -229,9 +232,9 @@ public class SalvoController {
                     checkGameOver(gamePlayer,getLastTurn(gamePlayer), getLastTurn(getEnemyGamePlayer(gamePlayer)));
                 } else {
                     dto.put("userScore", gamePlayer.getScore());
-                    dto.put("opponentScore", getEnemyGamePlayer(gamePlayer).getScore());
                 }
                 dto.put("gameState", makeGameStateDTO(gamePlayer));
+
 
 
             }
@@ -373,6 +376,7 @@ public class SalvoController {
     }
 
     private void updateScores(GamePlayer gamePlayer) {
+        GamePlayer enemy = getEnemyGamePlayer(gamePlayer);
         if (sunkShipsList(gamePlayer).size() != 5 && sunkShipsList(getEnemyGamePlayer(gamePlayer)).size() == 5) {
             scoreRepository.save(new Score(1.0, gamePlayer.getPlayer(), gamePlayer.getGame()));
         } else if (sunkShipsList(gamePlayer).size() == 5 && sunkShipsList(getEnemyGamePlayer(gamePlayer)).size() != 5) {
@@ -399,6 +403,32 @@ public class SalvoController {
     }
 
 
+
+    private String gameStatus (GamePlayer gamePlayer) {
+        GamePlayer enemy = getEnemyGamePlayer(gamePlayer);
+        String statusOfGame="";
+
+        if (enemy == null){
+            statusOfGame = "Looking for opponent";
+        } else {
+            boolean isGameOver = gameOver(gamePlayer, getLastTurn(gamePlayer), getLastTurn(getEnemyGamePlayer(gamePlayer)));
+            if (gamePlayer.getShips().size() < 5 || enemy.getShips().size() <5){
+                statusOfGame = "Placing Ships";
+            }
+            if (gamePlayer.getShips().size() == 5 && enemy.getShips().size() == 5){
+                if (showTurn(gamePlayer)){
+                    statusOfGame = "Enter Salvo";
+                }else {
+                    statusOfGame = "Waiting for opponent's Salvo";
+                }
+                if (isGameOver){
+                    statusOfGame = "Game Over";
+                }
+            }
+        }
+
+        return statusOfGame;
+    }
 //---------- DTO's -----------------------------------------------------------------------------------------------------------
 
     private Map<String, Object> makeGameDTO(Game game) {
@@ -424,7 +454,7 @@ public class SalvoController {
         dto.put("userTurn" , showTurn(gamePlayer));
         dto.put("numberOfUserTurns", getLastTurn(gamePlayer));
         dto.put("numberOfOpponentTurns", getLastTurn(getEnemyGamePlayer(gamePlayer)));
-        dto.put("gameOver", gameOver(gamePlayer,getLastTurn(gamePlayer), getLastTurn(getEnemyGamePlayer(gamePlayer))));
+        dto.put("gameOver", gameOver(gamePlayer, getLastTurn(gamePlayer), getLastTurn(getEnemyGamePlayer(gamePlayer))));
         return dto;
     }
 
@@ -433,10 +463,7 @@ public class SalvoController {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("turn", salvo.getTurn());
         dto.put("events", getHitShips(enemy.getShips(), salvo));
-//        dto.put("sunkShipsList", getSunkShips(enemy.getShips()));
-
         return dto;
-
     }
 
     private Map<String, Object> makeGamePlayerDTO(GamePlayer gamePlayer) {
