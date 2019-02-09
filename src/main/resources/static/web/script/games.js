@@ -181,7 +181,7 @@ function loadGameList() {
                     grid += "<td id='leader-board-column'><button id='return-game-button'><a href='game.html?gp=" + gamePlayerId1 + "'>Return</a></button></td>";
                 } else if (player2 == data.currentPlayer.userName) {
                     grid += "<td id='leader-board-column'><button id='return-game-button'><a href='game.html?gp=" + gamePlayerId2 + "'>Return</a></button></td>";
-                } else {
+                } else{
                     grid += "<td id='leader-board-column'></td>";
                 }
             } else if (data.currentPlayer.userName == data.games[i].gamePlayers[0].player.userName) {

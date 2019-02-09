@@ -28,21 +28,15 @@ const mainData = {
     enemyHits: [],
     hitsOnEnemy: [],
     hitsOnUser: [],
+    gameStatus: '',
 }
 
 function activateModal() {
     var modal = document.getElementById('myModal');
-
-    // Get the button that opens the modal
-    var btn = document.getElementById("myBtn");
-
-    // Get the <span> element that closes the modal
+    
+    modal.style.display = "block";
+  // Get the <span> element that closes the modal
     var span = document.getElementsByClassName("close")[0];
-
-    // When the user clicks the button, open the modal 
-    btn.onclick = function () {
-        modal.style.display = "block";
-    }
 
     // When the user clicks on <span> (x), close the modal
     span.onclick = function () {
@@ -243,8 +237,6 @@ function setClickId(e) {
 function clickSalvoCell(table) {
     table.addEventListener('click', (e) => {
         if (e.target.id != "") {
-            $("#ship-selection").hide();
-            $("#salvo-submission").show();
             if (e.target.classList == "salvo-location") {
                 swal("Cannot place guess in same cell more than once")
             }
@@ -583,6 +575,28 @@ function makeEventsTable() {
 
 }
 
+function gameStatus(data) {
+    console.log(data)
+    if (data == "Looking for opponent") {
+        $("#salvo-submission").hide();
+        $("#ship-selection").hide();
+    } else if (data == "Placing Ships") {
+        $("#salvo-submission").hide();
+        $("#ship-selection").show();
+    } else if (data == "Enter Salvo") {
+        $("#salvo-submission").show();
+        $("#ship-selection").hide();
+    } else if (data == "Waiting for opponent's Salvo") {
+        $("#salvo-submission").hide();
+        $("#ship-selection").hide();
+    } else {
+        $("#salvo-submission").hide();
+        $("#ship-selection").hide();
+         activateModal();
+    }
+
+}
+
 // ---------------------------------------------------
 
 function getData() {
@@ -590,13 +604,16 @@ function getData() {
         mainData.userShips = data.userShips;
         mainData.userSalvos = data.userSalvos;
         mainData.enemySalvos = data.enemySalvos;
+        mainData.gameStatus = data.gameStatus;
+        gameStatus(data.gameStatus);
+        
 
-//        sortUserEvents(data.hitsOnUser);
-//        sortEnemyEvents(data.hitsOnEnemy);
-//
-//        $("#eventsDiv").append(makeEventsTable());
-//        $("#sunkUserShips").append(makeUserSunkShips());
-//        $("#sunkEnemyShips").append(makeEnemySunkShips());
+        //        sortUserEvents(data.hitsOnUser);
+        //        sortEnemyEvents(data.hitsOnEnemy);
+        //
+        //        $("#eventsDiv").append(makeEventsTable());
+        //        $("#sunkUserShips").append(makeUserSunkShips());
+        //        $("#sunkEnemyShips").append(makeEnemySunkShips());
 
 
         printShips(mainData.userShips);
@@ -619,13 +636,8 @@ function loadGamePlayerData() {
     $("#tableContainer").append(generateUserGrid("U", mainData.columnHeaders, mainData.rowHeaders));
     $("#tableContainerSalvos").append(generateUserGrid("S", mainData.columnHeaders, mainData.rowHeaders));
     getData();
-    $("#salvo-submission").hide();
-    $("#ship-submission").show();
-    var userTable = document.getElementById("U");
-    var salvoTable = document.getElementById("S");
-    clickShip(userTable);
-    clickSalvoCell(salvoTable);
-    activateModal();
+    clickShip(document.getElementById("U"));
+    clickSalvoCell(document.getElementById("S"));
     deleteSalvos();
 }
 
