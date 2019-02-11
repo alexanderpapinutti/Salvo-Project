@@ -175,14 +175,20 @@ function loadGameList() {
                 var gamePlayerId1 = data.games[i].gamePlayers[1].gamePlayerId;
                 var player2 = data.games[i].gamePlayers[0].player.userName
                 var gamePlayerId2 = data.games[i].gamePlayers[0].gamePlayerId;
+                var gameOver = data.games[i].isGameOver;
+                console.log(gameOver);
                 grid += "<td id='game-id'>" + gameId + "</td>";
                 grid += "<td>2</td>";
-                if (player1 == data.currentPlayer.userName) {
-                    grid += "<td id='leader-board-column'><button id='return-game-button'><a href='game.html?gp=" + gamePlayerId1 + "'>Return</a></button></td>";
-                } else if (player2 == data.currentPlayer.userName) {
-                    grid += "<td id='leader-board-column'><button id='return-game-button'><a href='game.html?gp=" + gamePlayerId2 + "'>Return</a></button></td>";
-                } else{
-                    grid += "<td id='leader-board-column'></td>";
+                if (data.games[i].isGameOver != true) {
+                    if (player1 == data.currentPlayer.userName) {
+                        grid += "<td id='leader-board-column'><button id='return-game-button'><a href='game.html?gp=" + gamePlayerId1 + "'>Return</a></button></td>";
+                    } else if (player2 == data.currentPlayer.userName) {
+                        grid += "<td id='leader-board-column'><button id='return-game-button'><a href='game.html?gp=" + gamePlayerId2 + "'>Return</a></button></td>";
+                    } else {
+                        grid += "<td></td>";
+                    }
+                }else {
+                    grid += "<td>Game Over</td>";
                 }
             } else if (data.currentPlayer.userName == data.games[i].gamePlayers[0].player.userName) {
                 gamePlayerId = data.games[i].gamePlayers[0].gamePlayerId;
@@ -195,8 +201,8 @@ function loadGameList() {
                 gamePlayerId = data.games[i].gamePlayers[0].gamePlayerId;
                 grid += "<td id='game-id'>" + gameId + "</td>";
                 grid += "<td>" + mainData.numberOfPlayers + "</td>";
-                grid += "<td id='leader-board-column'><button id='join_game' onclick='joinGame("+gameId+")'>Join</button></td>";
-                
+                grid += "<td id='leader-board-column'><button id='join_game' onclick='joinGame(" + gameId + ")'>Join</button></td>";
+
             }
             grid += "</tr>";
         }
@@ -218,7 +224,7 @@ function loadLeaderBoard() {
         grid += '<th id=leader-board-header class="table text-center">Won</th>';
         grid += '<th id=leader-board-header class="table text-center">Lost</th>';
         grid += '<th id=leader-board-header class="table text-center">Tied</th>';
-      
+
         grid += '</tr>';
         let rows = data.length;
         var byProperty = function (prop) {

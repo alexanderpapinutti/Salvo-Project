@@ -22,7 +22,11 @@ body {
     height: 60px;
 }
 
-
+.hit-enemy-cell {
+    background: url('image/enemy-hit.png') center;
+    background-size: cover;
+    border: solid;
+}
 
 .user-guess {
     background: url('image/user-guess.gif') no-repeat;
@@ -40,6 +44,7 @@ body {
     background: black;
     color: white;
 }
+
 
 #ship-submission:hover {
     background: red;
@@ -109,6 +114,20 @@ body {
     
 }
 
+.timer{
+    width: 200px;
+    height: 50px;
+    background: green;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#divCountdown{
+    font-family: courier;
+   
+}
+
 #player1 {
     color: black;
     text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
@@ -171,7 +190,8 @@ h3 {
 }
 
 .enemy-guess {
-    background-color: #2a72b9;
+    background: url('image/facepalm.gif') no-repeat;
+    background-size: contain;
     border: solid;
 }
 
@@ -233,27 +253,34 @@ h1 {
 }
 
 .ship-location.Patrol-Boat.enemy-guess {
-    background: red;
+    background: url('image/enemy-hit.png') center;
+    background-size: cover;
     border: solid;
 }
 
 .ship-location.Submarine.enemy-guess {
-    background-color: red;
+    background: url('image/enemy-hit.png') center;
+    background-size: cover;
     border: solid;
 }
 
 .ship-location.Destroyer.enemy-guess {
-    background-color: red;
+    background: url('image/enemy-hit.png') center;
+    background-size: cover;
     border: solid;
 }
 
 .ship-location.Aircraft-Carrier.enemy-guess {
-    background-color: red;
+    background: url('image/enemy-hit.png') center;
+    background-size: cover;
     border: solid;
 }
 
+
+
 .ship-location.Battleship.enemy-guess {
-    background-color: red;
+    background: url('image/enemy-hit.png') center;
+    background-size: cover;
     border: solid;
 }
 

@@ -412,8 +412,12 @@ public class SalvoController {
             statusOfGame = "Looking for opponent";
         } else {
             boolean isGameOver = gameOver(gamePlayer, getLastTurn(gamePlayer), getLastTurn(getEnemyGamePlayer(gamePlayer)));
-            if (gamePlayer.getShips().size() < 5 || enemy.getShips().size() <5){
+            if (gamePlayer.getShips().size() < 5){
                 statusOfGame = "Placing Ships";
+            }else if (enemy.getShips().size() <5){
+                statusOfGame = "Waiting for enemy to place ships";
+            }else {
+
             }
             if (gamePlayer.getShips().size() == 5 && enemy.getShips().size() == 5){
                 if (showTurn(gamePlayer)){
@@ -422,7 +426,18 @@ public class SalvoController {
                     statusOfGame = "Waiting for opponent's Salvo";
                 }
                 if (isGameOver){
-                    statusOfGame = "Game Over";
+                    gamePlayer.getGame().setOver(true);
+                    if (sunkShipsList(gamePlayer).size() == 5 && sunkShipsList(enemy).size() == 5){
+                        statusOfGame = "You tied";
+                    }
+                    else {
+                        if (sunkShipsList(gamePlayer).size() == 5 && sunkShipsList(enemy).size() != 5){
+                            statusOfGame = "You win";
+                        }
+                        if (sunkShipsList(gamePlayer).size() != 5 && sunkShipsList(enemy).size() == 5){
+                            statusOfGame = "You Lose";
+                        }
+                    }
                 }
             }
         }
@@ -434,6 +449,7 @@ public class SalvoController {
     private Map<String, Object> makeGameDTO(Game game) {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("gameId", game.getId());
+        dto.put("isGameOver", game.isOver());
 
         dto.put("creationDate", game.getCreated().toString());
         dto.put("gamePlayers", game.getGamePlayers()
@@ -453,8 +469,6 @@ public class SalvoController {
     private Map<String, Object> makeGameStateDTO (GamePlayer gamePlayer){
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("userTurn" , showTurn(gamePlayer));
-        dto.put("numberOfUserTurns", getLastTurn(gamePlayer));
-        dto.put("numberOfOpponentTurns", getLastTurn(getEnemyGamePlayer(gamePlayer)));
         dto.put("gameOver", gameOver(gamePlayer, getLastTurn(gamePlayer), getLastTurn(getEnemyGamePlayer(gamePlayer))));
         return dto;
     }

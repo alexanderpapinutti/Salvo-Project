@@ -16,6 +16,7 @@ public class Game {
     @GenericGenerator(name = "native", strategy = "native")
     private long id;
     private Date created;
+    private boolean isOver;
 
     @OneToMany(mappedBy = "game", fetch = FetchType.EAGER)
     Set<GamePlayer> gamePlayers;
@@ -70,5 +71,15 @@ public class Game {
         this.created = created;
     }
 
+    public void setScore(Set<Score> score) {
+        this.score = score;
+    }
 
+    public boolean isOver() {
+        return isOver;
+    }
+
+    public void setOver(boolean over) {
+        isOver = over;
+    }
 }

@@ -29,24 +29,27 @@ const mainData = {
     hitsOnEnemy: [],
     hitsOnUser: [],
     gameStatus: '',
+    counter: 0,
 }
 
-function activateModal() {
+function activateModal(data) {
     var modal = document.getElementById('myModal');
-    
-    modal.style.display = "block";
-  // Get the <span> element that closes the modal
-    var span = document.getElementsByClassName("close")[0];
 
+    modal.style.display = "block";
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close")[0];
+    document.getElementById("game-over").innerHTML = data;
     // When the user clicks on <span> (x), close the modal
     span.onclick = function () {
-        modal.style.display = "none";
+//        modal.style.display = "none";
+        location.replace("/web/games.html")
     }
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function (event) {
         if (event.target == modal) {
-            modal.style.display = "none";
+//            modal.style.display = "none";
+             location.replace("/web/games.html")
         }
     }
 }
@@ -498,81 +501,59 @@ function gameDetails() {
     showElement("modal-wrapper");
 }
 
-// ---------------Need update ---------------------
-
-function sortUserEvents(data) {
-    var turnsArray = [];
-    for (var i = 0; i < data.length; i++) {
-        turnsArray.push(data[i]);
+function initCountdown(e){
+    var min, sec, hund, secExt, hundExt, startTimer;
+    var divCountdown = document.getElementById("divCountdown");
+    if(Math.floor(e/60) == 0){
+        min = 0;
     }
-    turnsArray.sort(function (a, b) {
-        return a.turn - b.turn
-    });
-
-    return mainData.hitsOnUser = turnsArray;
+    else{
+        min = Math.floor(e/60);
+    }
+    if(e%60==0){
+        sec = 0;
+    }
+    else{
+        sec = (e - 60*min);
+    }
+    hund = 0;
+    console.log(min);
+    console.log(sec);
+    startTimer = setInterval(startCountdown, 10);
+    function startCountdown (){
+        hund = hund -1;
+        if(hund == 0 && sec == 0 && min == 0){
+            clearInterval(startTimer);
+            divCountdown.innerHTML = "OUTATIME";
+        }else if (hund < 0 && sec > 0){
+            sec = sec - 1;
+            hund = 99;
+        }else  if (hund < 0 && sec == 0 && min >0){
+            min = min - 1;
+            sec = 59;
+            hund = 99;
+        }else {
+            if (sec < 10){
+                secExt = "0"+sec;
+            }
+            else{
+                secExt = sec;
+            }
+            if (hund < 10){
+                hundExt = "0"+hund;
+            }
+            else{
+                hundExt = hund;
+            }
+            divCountdown.innerHTML = min + ":"+secExt+":"+hundExt;
+        }  
+    }
 }
 
-function sortEnemyEvents(data) {
-    var turnsArray = [];
-    for (var i = 0; i < data.length; i++) {
-        turnsArray.push(data[i]);
-    }
-    turnsArray.sort(function (a, b) {
-        return a.turn - b.turn
-    });
-
-    return mainData.hitsOnEnemy = turnsArray;
-}
-
-function makeEnemySunkShips() {
-    var userShips = "<p> Sunk Enemy Ships: ";
-    for (var i = 0; i < mainData.hitsOnEnemy[0].sunkShips.length; i++) {
-        userShips += " (#turn " + mainData.hitsOnEnemy[0].sunkShips[i].turn + ") " + mainData.hitsOnEnemy[0].sunkShips[i].ship;
-    }
-    userShips += " </p>";
-
-    return userShips;
-}
-
-function makeUserSunkShips() {
-    var userShips = "<p> Sunk User Ships: ";
-    for (var i = 0; i < mainData.hitsOnUser[0].sunkShips.length; i++) {
-        userShips += " (#turn " + mainData.hitsOnUser[0].sunkShips[i].turn + ") " + mainData.hitsOnUser[0].sunkShips[i].ship;
-    }
-    userShips += " </p>";
-
-    return userShips;
-}
-
-function makeEventsTable() {
-    var table = "<table id='eventsTable' class='table table-dark text-center'>";
-    table += "<thead>";
-    table += "<tr>";
-    table += "<th scope='col'>Turn</th>";
-    table += "<th scope='col'>Player Casualties</th>";
-    table += "<th scope='col'>Enemy Casualties</th>";
-    table + "</tr>";
-    table += "</thead>";
-    table += "<tbody>";
-    for (var i = 0; i < mainData.hitsOnUser.length; i++) {
-        table += "<tr>";
-        table += "<td>" + mainData.hitsOnUser[i].turn + "</td>";
-        table += "<td>";
-        for (var j = 0; j < mainData.hitsOnUser[i].events.length; j++) {
-            table += "(#hits " + mainData.hitsOnUser[i].events[j].hits.length + ") " + mainData.hitsOnUser[i].events[j].type;
-        }
-        table += "</td>";
-        table += "<td>";
-        for (var k = 0; k < mainData.hitsOnEnemy[i].events.length; k++) {
-            table += " (#hits " + mainData.hitsOnEnemy[i].events[k].hits.length + ") " + mainData.hitsOnEnemy[i].events[k].type;
-        }
-        table += "</td>";
-        table += "</tr>"
-    }
-    table += "</tbody>";
-    table += "</table>";
-    return table;
-
+function timerCountdown (time){
+    setInterval(function () {
+            location.reload()
+        }, time);
 }
 
 function gameStatus(data) {
@@ -580,24 +561,36 @@ function gameStatus(data) {
     if (data == "Looking for opponent") {
         $("#salvo-submission").hide();
         $("#ship-selection").hide();
+        $("#gameEvent").html(data);
+        timerCountdown(10000)
     } else if (data == "Placing Ships") {
         $("#salvo-submission").hide();
         $("#ship-selection").show();
+        $("#gameEvent").html(data);
+    } else if (data == "Waiting for enemy to place ships") {
+        timerCountdown(10000);
+        $("#gameEvent").html(data);
+        $("#salvo-submission").hide();
+        $("#ship-selection").hide();
     } else if (data == "Enter Salvo") {
+        $("#gameEvent").html(data);
+        initCountdown(60);
         $("#salvo-submission").show();
         $("#ship-selection").hide();
     } else if (data == "Waiting for opponent's Salvo") {
+        $("#gameEvent").html(data);
+        initCountdown(60);
+        timerCountdown(10000);
         $("#salvo-submission").hide();
         $("#ship-selection").hide();
     } else {
+        $("#gameEvent").html(data);
         $("#salvo-submission").hide();
         $("#ship-selection").hide();
-         activateModal();
+        activateModal(data);
     }
 
 }
-
-// ---------------------------------------------------
 
 function getData() {
     $.getJSON("/api/game_view/" + location.search.split("=")[1], function (data) {
@@ -606,19 +599,15 @@ function getData() {
         mainData.enemySalvos = data.enemySalvos;
         mainData.gameStatus = data.gameStatus;
         gameStatus(data.gameStatus);
-        
-
-        //        sortUserEvents(data.hitsOnUser);
-        //        sortEnemyEvents(data.hitsOnEnemy);
-        //
-        //        $("#eventsDiv").append(makeEventsTable());
-        //        $("#sunkUserShips").append(makeUserSunkShips());
-        //        $("#sunkEnemyShips").append(makeEnemySunkShips());
-
+        mainData.hitsOnEnemy = data.hitsOnEnemy;
 
         printShips(mainData.userShips);
         printSalvos('#S', mainData.userSalvos, 'salvo-location');
         printSalvos('#U', mainData.enemySalvos, 'enemy-guess');
+        if (mainData.hitsOnEnemy != null) {
+            loadHitEnemyCells('#S', mainData.hitsOnEnemy, 'hit-enemy-cell');
+        }
+
         mainData.player1 = data.userInfo.userName;
         if (data.enemyInfo != null) {
             mainData.player2 = data.enemyInfo.userName;
@@ -632,6 +621,19 @@ function getData() {
     })
 }
 
+function loadHitEnemyCells(tableID, array, classID) {
+    for (var i = 0; i < array.length; i++) {
+        if (array[i].events != []) {
+            for (var j = 0; j < array[i].events.length; j++) {
+                for (var k = 0; k < array[i].events[j].hits.length; k++) {
+                    var idLocation = array[i].events[j].hits[k]
+                    $(tableID + idLocation).removeClass('salvo-location').addClass(classID);
+                }
+            }
+        }
+    }
+}
+
 function loadGamePlayerData() {
     $("#tableContainer").append(generateUserGrid("U", mainData.columnHeaders, mainData.rowHeaders));
     $("#tableContainerSalvos").append(generateUserGrid("S", mainData.columnHeaders, mainData.rowHeaders));
@@ -639,6 +641,8 @@ function loadGamePlayerData() {
     clickShip(document.getElementById("U"));
     clickSalvoCell(document.getElementById("S"));
     deleteSalvos();
+
 }
 
 loadGamePlayerData();
+

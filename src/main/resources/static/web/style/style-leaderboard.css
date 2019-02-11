@@ -1,18 +1,19 @@
-input[type=text], input[type=password] {
+input[type=text],
+input[type=password] {
     width: 90%;
     padding: 12px 20px;
     margin: 8px 26px;
     display: inline-block;
     border: 1px solid #ccc;
     box-sizing: border-box;
-	font-size:16px;
+    font-size: 16px;
 }
 
 .scroll-table {
-    
-    height: 200px;
+
+    height: 190px;
     overflow: scroll;
-    
+
 }
 
 #join_game {
@@ -20,7 +21,7 @@ input[type=text], input[type=password] {
     background: #2a72b9;
 }
 
-#join_game:hover{
+#join_game:hover {
     background: coral;
 }
 
@@ -31,15 +32,15 @@ input[type=text], input[type=password] {
 #return-game-button {
     border: black solid 2px;
     background: #2a72b9;
-    
-    
+
+
 }
 
 #return-game-button:hover {
     background: coral;
 }
 
-#return-game-button a{
+#return-game-button a {
     color: black;
     text-decoration: none;
 }
@@ -59,14 +60,15 @@ input[type=text], input[type=password] {
     margin: 24px 0 12px 0;
     position: relative;
 }
+
 .avatar {
     width: 200px;
-	height:200px;
+    height: 200px;
     border-radius: 50%;
 }
 
 .modal {
-	display:none;
+    display: none;
     position: fixed;
     z-index: 1;
     left: 0;
@@ -74,15 +76,16 @@ input[type=text], input[type=password] {
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0,0,0,0.4);
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
 body {
-   
+
     background-image: url('image/leaderboard-background.jpeg');
-    background-size: cover;                      
-    background-repeat:   no-repeat;
-    background-position: center center;
+
+    background-size: 100% 100% cover;
+    background-repeat: no-repeat;
+    background-position: center;
     height: 100vh;
 }
 
@@ -91,19 +94,19 @@ body {
     background-color: #fefefe;
     margin: 4% auto 15% auto;
     border: 1px solid #888;
-    width: 40%; 
-	padding-bottom: 30px;
+    width: 40%;
+    padding-bottom: 30px;
 }
 
-#login-button{
+#login-button {
     margin-top: 5px;
     width: 50%;
     background: coral;
     border: none;
-    
+
 }
 
-#signUp-button{
+#signUp-button {
     width: 50%;
     margin-top: 5px;
     background: coral;
@@ -116,6 +119,7 @@ ol li button {
     border: none;
     text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
+
 /* The Close Button (x) */
 .close {
     position: absolute;
@@ -125,13 +129,15 @@ ol li button {
     font-size: 35px;
     font-weight: bold;
 }
-.close:hover,.close:focus {
+
+.close:hover,
+.close:focus {
     color: red;
     cursor: pointer;
 }
 
-#errorMsg{
-    color:red;
+#errorMsg {
+    color: red;
     height: 20px;
 }
 
@@ -139,13 +145,19 @@ ol li button {
 .animate {
     animation: zoom 0.6s
 }
+
 @keyframes zoom {
-    from {transform: scale(0)} 
-    to {transform: scale(1)}
+    from {
+        transform: scale(0)
+    }
+
+    to {
+        transform: scale(1)
+    }
 }
 
 .form-container {
-    display: flex;  
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -160,9 +172,9 @@ ol li button {
     text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
 
-.top_tab{
+.top_tab {
     height: 50px;
-    background-color: rgba(0,0,0,0.3);
+    background-color: rgba(0, 0, 0, 0.3);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -177,7 +189,7 @@ li {
     font-size: 20px;
 }
 
-li:hover{
+li:hover {
     cursor: pointer;
     background-color: salmon;
     border-radius: 5px;
@@ -189,8 +201,8 @@ ol {
     display: flex;
 }
 
-.my_links{
-   width: 20%;
+.my_links {
+    width: 20%;
 }
 
 .center-title {
@@ -203,7 +215,7 @@ ol {
     justify-content: center;
     align-items: center;
     font-family: fantasy;
-    background: rgba(0,0,0,0.3);
+    background: rgba(0, 0, 0, 0.3);
     width: 300px;
     height: 60px;
     margin-top: 10px;
@@ -211,7 +223,3 @@ ol {
     border: solid 2px black;
     text-shadow: -1px 0 white, 0 1px white, 1px 0 white, 0 -1px white;
 }
-
-
-
-
