@@ -176,7 +176,6 @@ function loadGameList() {
                 var player2 = data.games[i].gamePlayers[0].player.userName
                 var gamePlayerId2 = data.games[i].gamePlayers[0].gamePlayerId;
                 var gameOver = data.games[i].isGameOver;
-                console.log(gameOver);
                 grid += "<td id='game-id'>" + gameId + "</td>";
                 grid += "<td>2</td>";
                 if (data.games[i].isGameOver != true) {

@@ -3,7 +3,6 @@ package com.codeoftheweb.Salvo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -208,8 +207,6 @@ public class SalvoController {
                     .stream()
                     .map(salvo -> makeSalvoDTO(salvo))
                     .collect(Collectors.toList()));
-            dto.put("gameStatus", gameStatus(gamePlayer));
-
             if (enemy != null) {
                 sinkShips(enemy.getShips());
                 sinkShips(gamePlayer.getShips());
@@ -234,10 +231,8 @@ public class SalvoController {
                     dto.put("userScore", gamePlayer.getScore());
                 }
                 dto.put("gameState", makeGameStateDTO(gamePlayer));
-
-
-
             }
+            dto.put("gameStatus", gameStatus(gamePlayer));
         } else {
             dto.put("error", "Not your game");
         }
@@ -396,13 +391,11 @@ public class SalvoController {
         boolean gameOver = false;
         if (getEnemyGamePlayer(gamePlayer) != null && userTurn.equals(enemyTurn)) {
             if (sunkShipsList(gamePlayer).size() == 5 || sunkShipsList(getEnemyGamePlayer(gamePlayer)).size() == 5) {
-                gameOver = true;
-            }
+            gameOver = true;
         }
+    }
         return gameOver;
     }
-
-
 
     private String gameStatus (GamePlayer gamePlayer) {
         GamePlayer enemy = getEnemyGamePlayer(gamePlayer);
@@ -425,17 +418,19 @@ public class SalvoController {
                 }else {
                     statusOfGame = "Waiting for opponent's Salvo";
                 }
-                if (isGameOver){
+                if (isGameOver && gamePlayer.getScore() != null){
+                    Double score = gamePlayer.getScore().getScore();
+
                     gamePlayer.getGame().setOver(true);
-                    if (sunkShipsList(gamePlayer).size() == 5 && sunkShipsList(enemy).size() == 5){
+                    if (score == 0.5){
                         statusOfGame = "You tied";
                     }
                     else {
-                        if (sunkShipsList(gamePlayer).size() == 5 && sunkShipsList(enemy).size() != 5){
-                            statusOfGame = "You win";
-                        }
-                        if (sunkShipsList(gamePlayer).size() != 5 && sunkShipsList(enemy).size() == 5){
+                        if (score == 0.0){
                             statusOfGame = "You Lose";
+                        }
+                        if (score == 1.0){
+                            statusOfGame = "You Win";
                         }
                     }
                 }
@@ -450,7 +445,6 @@ public class SalvoController {
         Map<String, Object> dto = new LinkedHashMap<String, Object>();
         dto.put("gameId", game.getId());
         dto.put("isGameOver", game.isOver());
-
         dto.put("creationDate", game.getCreated().toString());
         dto.put("gamePlayers", game.getGamePlayers()
                 .stream()

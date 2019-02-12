@@ -33,6 +33,7 @@ const mainData = {
 }
 
 function activateModal(data) {
+    console.log(data)
     var modal = document.getElementById('myModal');
 
     modal.style.display = "block";
@@ -552,38 +553,36 @@ function initCountdown(e){
 
 function timerCountdown (time){
     setInterval(function () {
-            location.reload()
+            location.reload();
         }, time);
 }
 
 function gameStatus(data) {
-    console.log(data)
     if (data == "Looking for opponent") {
         $("#salvo-submission").hide();
         $("#ship-selection").hide();
         $("#gameEvent").html(data);
-        timerCountdown(10000)
+        getData()
     } else if (data == "Placing Ships") {
         $("#salvo-submission").hide();
         $("#ship-selection").show();
         $("#gameEvent").html(data);
     } else if (data == "Waiting for enemy to place ships") {
-        timerCountdown(10000);
+        getData();
         $("#gameEvent").html(data);
         $("#salvo-submission").hide();
         $("#ship-selection").hide();
     } else if (data == "Enter Salvo") {
         $("#gameEvent").html(data);
-        initCountdown(60);
         $("#salvo-submission").show();
         $("#ship-selection").hide();
     } else if (data == "Waiting for opponent's Salvo") {
         $("#gameEvent").html(data);
-        initCountdown(60);
-        timerCountdown(10000);
+        getData();
         $("#salvo-submission").hide();
         $("#ship-selection").hide();
-    } else {
+    } else { 
+        getData();
         $("#gameEvent").html(data);
         $("#salvo-submission").hide();
         $("#ship-selection").hide();
@@ -600,7 +599,6 @@ function getData() {
         mainData.gameStatus = data.gameStatus;
         gameStatus(data.gameStatus);
         mainData.hitsOnEnemy = data.hitsOnEnemy;
-
         printShips(mainData.userShips);
         printSalvos('#S', mainData.userSalvos, 'salvo-location');
         printSalvos('#U', mainData.enemySalvos, 'enemy-guess');

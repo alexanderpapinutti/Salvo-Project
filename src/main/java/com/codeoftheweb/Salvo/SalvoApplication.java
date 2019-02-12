@@ -221,7 +221,13 @@ public class SalvoApplication {
 			Salvo shotp1r2 = new Salvo(2, gamePlayer1, p1r2);
 			Salvo shotp2r2 = new Salvo(2, gamePlayer2, p2r2);
 			Salvo shotp1r3 = new Salvo(3, gamePlayer1, p1r3);
+			Salvo shotp1r4 = new Salvo(4, gamePlayer1, location2);
+			Salvo shotp1r5 = new Salvo(5, gamePlayer1, location3);
+			Salvo shotp1r6 = new Salvo(6, gamePlayer1, location4);
 			Salvo shotp2r3 = new Salvo(3, gamePlayer2, p2r3);
+			Salvo shotp2r4 = new Salvo(4, gamePlayer2, location2);
+			Salvo shotp2r5 = new Salvo(5, gamePlayer2, location3);
+			Salvo shotp2r6 = new Salvo(6, gamePlayer2, location4);
 //
 			salvoRepository.save(shotp1r1);
 			salvoRepository.save(shotp2r1);
@@ -229,6 +235,12 @@ public class SalvoApplication {
 			salvoRepository.save(shotp2r2);
 			salvoRepository.save(shotp1r3);
 			salvoRepository.save(shotp2r3);
+			salvoRepository.save(shotp1r4);
+			salvoRepository.save(shotp2r4);
+			salvoRepository.save(shotp1r5);
+			salvoRepository.save(shotp2r5);
+			salvoRepository.save(shotp1r6);
+			salvoRepository.save(shotp2r6);
 
 //			Score score1 = new Score(1, player1, game1);
 //			Score score2 = new Score(0, player2, game1);
